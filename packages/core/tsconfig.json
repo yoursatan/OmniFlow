@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    /* 不设 rootDir：tsc/tsup 会在 dts 生成时把 import '@omniflow/shared' 展开到
+       packages/shared/src/，若 rootDir=src 会触发 TS6059 not under 'rootDir'。
+       由于 shared 已单独编译产出 d.ts，core 应通过 typesVersions 读取 prebuilt 类型，
+       所以正确方案：关闭 composite、不设 rootDir、走 moduleResolution:bundler 路径别名。 */
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "node_modules", "coverage", "**/*.test.ts", "**/*.spec.ts"]
+}

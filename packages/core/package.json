@@ -1,0 +1,43 @@
+{
+  "name": "@omniflow/core",
+  "version": "0.1.0-pre",
+  "private": false,
+  "description": "OmniFlow 核心引擎（纯 TS，零原生依赖，Web + PC 双端同构）",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./*": "./src/*"
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "license": "GPL-3.0",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target node20 --out-dir dist --external @omniflow/shared",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --dir src",
+    "test:watch": "vitest --dir src",
+    "coverage": "vitest run --dir src --coverage",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch --target node20 --out-dir dist --external @omniflow/shared",
+    "clean": "rimraf dist coverage"
+  },
+  "dependencies": {
+    "@omniflow/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "@types/node": "^20.14.0",
+    "rimraf": "^5.0.7"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    /* ============================================================
+     *  基础设置
+     * ========================================================== */
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+
+    /* ============================================================
+     *  严格度 - 开最高等级，避免隐藏 bug（规则引擎必须严谨）
+     * ========================================================== */
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noUnusedLocals": false,   // 阶段开发时先关掉，M1 后再打开
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    "allowUnreachableCode": false,
+
+    /* ============================================================
+     *  输出与解析
+     * ========================================================== */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": false,
+    "allowImportingTsExtensions": false,
+
+    /* ============================================================
+     *  路径别名（与 Vite/TsConfigPaths 保持一致）
+     * ========================================================== */
+    "baseUrl": ".",
+    "paths": {
+      "@omniflow/shared": ["packages/shared/src/index.ts"],
+      "@omniflow/shared/*": ["packages/shared/src/*"],
+      "@omniflow/core": ["packages/core/src/index.ts"],
+      "@omniflow/core/*": ["packages/core/src/*"],
+      "@omniflow/ui": ["packages/ui/src/index.ts"],
+      "@omniflow/ui/*": ["packages/ui/src/*"],
+      "@omniflow/engine-js": ["packages/engine-js/src/index.ts"],
+      "@omniflow/engine-js/*": ["packages/engine-js/src/*"],
+      "@omniflow/reader": ["packages/reader/src/index.ts"],
+      "@omniflow/reader/*": ["packages/reader/src/*"],
+      "@omniflow/player": ["packages/player/src/index.ts"],
+      "@omniflow/player/*": ["packages/player/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".turbo", ".pnpm-store", "prototype"]
+}

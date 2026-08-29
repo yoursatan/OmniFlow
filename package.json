@@ -1,0 +1,40 @@
+{
+  "name": "omniflow",
+  "private": true,
+  "version": "0.1.0-pre",
+  "description": "汇流 OmniFlow - Web + PC 双端同构的全源媒体聚合规则引擎",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "license": "GPL-3.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "pnpm --filter @omniflow/web dev",
+    "dev:desktop": "pnpm --filter @omniflow/desktop tauri dev",
+    "build": "turbo run build",
+    "build:core": "pnpm --filter @omniflow/core build",
+    "build:shared": "pnpm --filter @omniflow/shared build",
+    "build:web": "pnpm --filter @omniflow/web build",
+    "test": "turbo run test",
+    "test:core": "pnpm --filter @omniflow/core test",
+    "lint": "eslint \"{packages,apps}/**/*.{ts,tsx,vue,js}\" --max-warnings=0",
+    "lint:fix": "eslint \"{packages,apps}/**/*.{ts,tsx,vue,js}\" --fix",
+    "format": "prettier --write \"{packages,apps,docs}/**/*.{ts,tsx,vue,js,json,md,css,html}\"",
+    "format:check": "prettier --check \"{packages,apps,docs}/**/*.{ts,tsx,vue,js,json,md,css,html}\"",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rimraf \"**/node_modules\" \"**/.turbo\" \"**/dist\" pnpm-lock.yaml"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^5.0.7",
+    "turbo": "^2.0.12",
+    "typescript": "^5.5.4"
+  }
+}
