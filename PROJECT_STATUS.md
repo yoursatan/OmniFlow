@@ -4,7 +4,7 @@
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
 > **当前阶段**：M0 基建中（Step 2-5 完成，下一步 Step 6 → apps/web 空壳）
-> **Git Commit**：78d6d46（docs: v0.1.2 STATUS/memory 同步，骨架 b693f11）
+> **Git Commit**：217c8d9（docs v1.2 最终；骨架 b693f11 / STATUS同步 78d6d46）
 > **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
