@@ -31,11 +31,13 @@ export function xpathSelect(
 
     const textList = list.map((n: unknown) => {
       if (typeof n === 'string' || typeof n === 'number') return String(n)
-      if (n && typeof n === 'object' && 'nodeValue' in n) {
+      // text 节点 nodeValue 有值；element 节点 nodeValue=null 需 fallthrough 到 textContent
+      if (n && typeof n === 'object' && 'nodeValue' in n && (n as { nodeValue: unknown }).nodeValue != null) {
         return String((n as { nodeValue: string }).nodeValue)
       }
       if (n && typeof n === 'object' && 'textContent' in n) {
-        return String((n as { textContent: string }).textContent)
+        const tc = (n as { textContent: unknown }).textContent
+        return tc != null ? String(tc) : ''
       }
       return String(n ?? '')
     })

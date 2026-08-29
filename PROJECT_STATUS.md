@@ -67,7 +67,7 @@
 ### 2.1 阶段状态总览
 ```
 M0 基建        ████████████░  95%  (Step 2-8 ✅ + 5.1.9/5.1.10/5.1.13/5.1.14 ✅；仅剩 5.1.8 原型迁移 P1 + 5.1.12 server P2 可延后)
-M1 引擎内核    ████████████░  95%  (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado字段对齐 ✅ + 77 单测含真实书源 ✅ + CLI 端到端演示 ✅；剩余 500 条回归测试)
+M1 引擎内核    █████████████  100% (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado字段对齐 ✅ + 580 单测含 503 回归 ✅ + CLI 端到端演示 ✅；M1 全部 P0/P1/P2 达成)
 M2 JS 沙箱     █░░░░░░░░░░░  10%  (jsruntime 接口契约 + 求值器 evalHeader/evalExploreUrl/evalSearchUrl ✅；缺口 quickjs-wasm 宿主 + 同步桥)
 M3 书源消费    ░░░░░░░░░░░░   0%
 M4 影视消费    ░░░░░░░░░░░░   0%
@@ -200,7 +200,7 @@ init-project-plan-R7Bn1J/
 | P0 | ~~`packages/core/src/engine/pipeline.ts` Pipeline 5 级执行~~ ✅ | 5 端到端单测全通过；修复 createContext 变量丢失 + stepToRuleString 模式前缀 |
 | P1 | ~~`packages/core/src/adapters/legado.ts` Legado 适配器~~ ✅ | 5 管道转换（search/detail/toc/content + replaceRegex），单测通过 |
 | P1 | ~~`packages/core/src/repo/` 内存 repo 实现（测试用）~~ ✅ | CRUD + 缓存 + 收藏 + 历史，单测通过 |
-| P1 | 500 条兼容性回归单测 | ⬜ 待做（当前 77 单测：selector 15 + rule-router 9 + pipeline 5 + legado 19 + real-sources 15 + real-rss 8 + demo 4 + smoke 2） |
+| P1 | ~~500 条兼容性回归单测~~ ✅ | regression.test.ts 503 测试（29 源 × 17 检查点 + 10 规则语法）；发现并修复 XPath element 节点 nodeValue=null 未 fallthrough bug |
 | P2 | ~~Node CLI 端到端演示：搜书→目录→正文~~ ✅ | cli/demo.ts + demo.test.ts 4 测试通过；链路 adapter→pipeline→mock HTTP→selector extractList 验证，提取 2 本书字段正确（search 端到端打通） |
 
 ### 5.3 M2-M6 远期（详见 §6 路线图缺口）
@@ -258,7 +258,7 @@ M6 规则工坊+发布                                                          
 | 里程碑 | 周期 | 验收演示（规划） | 当前进度 | 缺口摘要 |
 |---|---|---|---|---|
 | **M0 基建** | 2w | `pnpm dev` 起 web，`pnpm tauri dev` 起桌面，CI 绿 | ~30% (Git+文档+原型) | Monorepo 骨架、pnpm workspace、TS/Vite/Vue 工程化、ESLint/Prettier、CI Workflow、原型迁移到 Vue SFC |
-| **M1 引擎内核 ★** | 4w | Node CLI：吃 legado 书源 → 搜书 → 取目录 → 读正文 | 95% | ✅ 5 选择器 + rule-router + pipeline + repo + legado 适配器（与官方 BookSource.kt 字段对齐）+ 77 单测（含 29 真实书源 + 15 订阅源 fixtures）+ CLI 端到端演示（search 链路打通）；缺口：500 条回归测试 |
+| **M1 引擎内核 ★** | 4w | Node CLI：吃 legado 书源 → 搜书 → 取目录 → 读正文 | 100% ✅ | ✅ 5 选择器 + rule-router + pipeline + repo + legado 适配器（与官方 BookSource.kt 字段对齐）+ 580 单测（含 503 回归 + 29 真实书源 + 15 订阅源 fixtures）+ CLI 端到端演示；M1 全部 P0/P1/P2 达成 |
 | **M2 JS 沙箱** | 3w | 同 CLI 跑通 1 个 eso 源 + 1 个 drpy 源 | 10% | ✅ jsruntime 接口契约 + 求值器（evalHeader/evalExploreUrl/evalSearchUrl）已定义（解卡点 #22/#25）；缺口：quickjs-wasm 宿主、PDFA/PDFH 垫片、同步阻塞桥、java.* 兼容层、超时熔断 |
 | **M3 书源消费端** | 3w | 导入书源订阅 → 书院发现 → 书架分组 → 阅读（翻页/换源）| 0% | 导入向导、Dexie/SQLite 双 repo、阅读器排版引擎、RSS 发现 |
 | **M4 影视消费端** | 3w | 导入 TVBox 配置 → 影院发现 → 详情 → 播放 → 收藏入库 | 0% | CMS 协议客户端、ArtPlayer 集成(hls/dash)、聚合搜索+换源、解析接口池 + web 嗅探 |
@@ -768,8 +768,8 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
   - 覆盖率：pipeline.ts 80.8% / legado.ts 100% / memory.ts 74.2% / context.ts 73.1% / selector index 75.3%
 ⚠️ 遗留
   - tsup 未安装（root node_modules 无 tsup 二进制），core 包构建待补；不影响 typecheck + vitest 验证
-  - 500 条兼容性回归单测未做（当前 77 单测覆盖核心路径，M1 剩余 P1）
-  - Node CLI 端到端演示 ✅ 完成（cli/demo.ts + demo.test.ts，search 链路 adapter→pipeline→mock HTTP→selector extractList 打通，4 测试通过）；剩余 M1 P1：500 条兼容性回归单测
+  - 500 条兼容性回归单测 ✅ 完成（regression.test.ts 503 测试，29 源×17 检查点；发现并修复 XPath element nodeValue=null 未 fallthrough bug；M1 P1 达成）
+  - Node CLI 端到端演示 ✅ 完成（cli/demo.ts + demo.test.ts，search 链路 adapter→pipeline→mock HTTP→selector extractList 打通，4 测试通过）
   - cheerio 1.0.0 与 xmldom 的 XPath 选择器共存 OK（T5 风险未触发）
 🚨 阻塞
   - 0（当前无活跃阻塞项）
