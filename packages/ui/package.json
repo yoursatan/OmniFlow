@@ -1,0 +1,40 @@
+{
+  "name": "@omniflow/ui",
+  "version": "0.1.0-pre",
+  "private": false,
+  "description": "OmniFlow 共享组件库（Vue3 SFC，Web + Desktop 同构）",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles": "./src/styles/index.css"
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "license": "GPL-3.0",
+  "scripts": {
+    "build": "vue-tsc --noEmit && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "dev": "vite build --watch",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "vue": "^3.5.10",
+    "vite": "^5.4.8",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "vue-tsc": "^2.1.6",
+    "typescript": "^5.5.4",
+    "rimraf": "^5.0.7"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

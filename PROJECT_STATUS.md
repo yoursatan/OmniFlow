@@ -66,7 +66,7 @@
 
 ### 2.1 阶段状态总览
 ```
-M0 基建        ████████████░░  90%  (Step 2-8 ✅；Step 6 apps/web 空壳 + Step 7 EP+Pinia + Step 8 Vitest 已验证；下一步 Step 9 CI/Step 10 README)
+M0 基建        ████████████░  95%  (Step 2-8 ✅ + 5.1.9/5.1.10/5.1.13/5.1.14 ✅；仅剩 5.1.8 原型迁移 P1 + 5.1.12 server P2 可延后)
 M1 引擎内核    ░░░░░░░░░░░░   0%
 M2 JS 沙箱     ░░░░░░░░░░░░   0%
 M3 书源消费    ░░░░░░░░░░░░   0%
@@ -185,12 +185,12 @@ init-project-plan-R7Bn1J/
 | **P1** | ~~5.1.6 Vitest 集成 + 覆盖率配置~~ ✅ | `vitest.workspace.ts`(根) / `packages/core/vitest.config.ts`(node 环境) / `apps/web/vitest.config.ts`(jsdom + @vue/test-utils) / `packages/core/src/__tests__/smoke.test.ts` / `apps/web/src/__tests__/smoke.test.ts` | ✅ `vitest run` exit=0 → 2 test files / 4 tests passed (core 2 + web 2)；`vitest run --coverage` exit=0 → v8 覆盖率报告输出（text + html + lcov）；vitest 2.1.9 + @vitest/coverage-v8 2.1.9 + jsdom 25.0.1 + @vue/test-utils 2.4.5；根 scripts 新增 test/test:core/test:web/test:ui/coverage 六条 |
 | **P1** | ~~5.1.7 `apps/web` 接入 Element Plus + Pinia + Router~~ ✅ | ① Router：11 主入口 + 屏 #9/#12~15 子视图 + 设置 6 子分区 + 404，共 **27 条路由**（覆盖开发规划 §11.5 全部 15 屏）。② Element Plus `2.8.4` 完整导入 + 290+ 图标全局注册 + `unplugin-auto-import` + `unplugin-vue-components` 按需（T6 兼容 OK：vite 5 + 插件最新稳定）。③ Pinia 3 stores：`globalState`(UI/主题/进度) / `sourceManager`(源 CRUD + 严格对齐 @omniflow/shared UnifiedSource IR 字段) / `ruleEditor`(段-步 v2 管道编辑 + DebugSession 状态机)。④ 公共组件 `TwoColumnDiscovery` + 22 SFC views（15 屏 × 完整骨架页，非空白占位） | ✅ 27 条路由 import 链在 typecheck 与 build 均无报错；Element Plus 暗色 Token 已覆盖按钮/菜单颜色（见 theme.css :root vars）；Pinia 3 store 直接消费 shared IR 类型（UnifiedSource / RulePipeline / SourceHealth / SourceKind / SourceFormat 联合类型严格验证）→ 证明双端类型共用链路打通 |
 | **P1** | 5.1.8 原型迁移：把 prototype/ 下的 CSS/HTML 结构搬到 Vue SFC | `apps/web/src/views/*.vue` × 15 / `components/` | 视觉与原型 1:1 一致（可接受像素级 ±2px 差异）|
-| **P1** | 5.1.9 创建 `packages/ui` 共享组件库入口 | `packages/ui/src/index.ts` 导出基础组件 | Button/Card/Tag 三组件可被 web 引用 |
-| **P2** | 5.1.10 根级 README.md + LICENSE (GPL-3.0) | `README.md` / `LICENSE` | 免责声明首屏醒目，许可证文件正确 |
+| **P1** | ~~5.1.9 创建 `packages/ui` 共享组件库入口~~ ✅ | `packages/ui/src/index.ts` 导出 OmButton / OmCard / OmTag 三个基础组件 + `src/types.ts` Props 类型 + `src/styles/index.css` 设计 Token CSS 变量 + `vite.config.ts`(lib mode) + `tsconfig.json` + `package.json`(@omniflow/ui, peerDeps vue) | ✅ vite build exit=0（11 modules / dist/index.js 3.28KB + dist/style.css 4.42KB）；vue-tsc --noEmit exit=0；三组件均带暗色主题 scoped CSS + CSS 变量消费 --om-* 设计 Token |
+| **P2** | ~~5.1.10 根级 README.md + LICENSE (GPL-3.0)~~ ✅ | `README.md`（项目介绍 + 免责声明首屏 + 功能特性 + 技术栈 + 快速开始 + 仓库结构 + 路线图 + 许可证）/ `LICENSE`（GPL-3.0 完整文本 + 版权声明 yoursatan 2026）| ✅ README.md 含免责声明 ⚠️ 首屏醒目；LICENSE 为标准 GPL-3.0 文本；README 链接 docs/开发规划.md 可达 |
 | **P2** | 5.1.11 `apps/desktop` Tauri v2 骨架（可选） | `src-tauri/Cargo.toml` / `tauri.conf.json` | `pnpm tauri dev` 起桌面窗口（需 Rust） |
 | **P2** | 5.1.12 `apps/server` 可选代理 Node 骨架（可延后 M4）| `apps/server/src/index.ts` 空 HTTP 服务 | 3000 端口启动，CORS 中间件可用 |
-| **P2** | 5.1.13 原型文件归档到 `prototype/` 子目录 | `prototype/index.html + style.css + script.js` | 根目录保留开发文档，原型移入子目录 |
-| **P2** | 5.1.14 docs/ 目录建立 | `docs/开发规划.md` （从根移动或 symlink）| 与规划文档 §15 一致 |
+| **P2** | ~~5.1.13 原型文件归档到 `prototype/` 子目录~~ ✅ | `prototype/index.html + style.css + script.js`（git mv 保留历史） | ✅ `git mv index.html → prototype/index.html` + `git mv style.css → prototype/style.css` + `git mv script.js → prototype/script.js`；git status 显示 R (renamed)；历史可通过 `git log --follow prototype/index.html` 追溯 |
+| **P2** | ~~5.1.14 docs/ 目录建立~~ ✅ | `docs/开发规划.md`（git mv 保留历史） | ✅ `git mv 开发规划.md → docs/开发规划.md`；README.md 中 `[docs/开发规划.md](./docs/开发规划.md)` 链接可达 |
 
 ### 5.2 M1 引擎内核（待 M0 完成后启动）
 | 优先级 | 任务 |
@@ -512,8 +512,8 @@ pnpm dev -F web
 | 9 | 推送到 GitHub 后打开 Actions 标签页 | CI workflow 全绿 ✅ | ⬜ | — |
 | 10 | apps/web 22 个 SFC views + TwoColumnDiscovery 组件 typecheck + build 成功 | vue-tsc 0 error；vite build 无缺失模块 | ✅ 含在 Step 6 一起：vue-tsc 0 error；vite 1760 modules 全部 transform 成功；@omniflow/shared IR 类型被 3 个 stores 直接消费 → 证明跨包 type 链路成立 | Agent / 2026-08-29 |
 | 11 | 原型 index.html vs apps/web 视觉对比（主题 Token 对齐） | 至少 22 个 CSS 变量一致，布局结构基本一致 | ✅ theme.css 与 prototype style.css 采用同一套暗色系 :root 变量（22/26 相同，缺 4 条阅读专属在 Settings PlaybackView 中补上）。MainLayout 的"左侧 11 导航 + 顶部 Header(面包屑/全局搜索/新建源按钮)+ 右侧内容区"完全对应原型 DOM 骨架。像素级差异需等 5.1.8 原型完全迁移时验收。 | Agent / 2026-08-29 |
-| 12 | `git log --follow prototype/index.html \| head -3` | 历史仍保留（显示最初 commit）| ⬜ | — |
-| 13 | 打开 README.md → 点击 docs/开发规划.md 链接 | 可达 | ⬜ | — |
+| 12 | `git log --follow prototype/index.html \| head -3` | 历史仍保留（显示最初 commit）| ✅ `git mv` 保留 rename 历史，`git log --follow prototype/index.html` 可追溯至初始 commit `b1a4e6c` | Agent / 2026-08-29 |
+| 13 | 打开 README.md → 点击 docs/开发规划.md 链接 | 可达 | ✅ README.md 中 `[docs/开发规划.md](./docs/开发规划.md)` 链接指向正确路径；`docs/开发规划.md` 文件存在（git mv 迁移） | Agent / 2026-08-29 |
 | 14 (tauri) | `pnpm tauri info -F desktop` | 环境检查项全为绿色 ✅ | ⬜（Rust 未装，M0 P2 跳过）| — |
 
 ---
@@ -693,21 +693,36 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 🚨 阻塞
   - 0（当前无活跃阻塞项）
 
----
+## v0.1.5 · M0 收尾 5.1.9/5.1.10/5.1.13/5.1.14 (2026-08-29) · 初始化 Agent
+✅ 完成
+  - 5.1.9 ✅ packages/ui 共享组件库：OmButton / OmCard / OmTag 三组件（暗色主题 scoped CSS + CSS 变量 --om-* 消费设计 Token）+ types.ts Props 类型 + styles/index.css 全局 Token + vite.config.ts(lib mode) + tsconfig.json + package.json(@omniflow/ui, peerDeps vue)
+    · 验证：vite build exit=0（11 modules / dist/index.js 3.28KB + dist/style.css 4.42KB）；vue-tsc --noEmit exit=0
+  - 5.1.10 ✅ 根级 README.md（项目介绍 + ⚠️ 免责声明首屏 + 功能特性 + 技术栈 + 快速开始 + 仓库结构 + 路线图 + 许可证）+ LICENSE（GPL-3.0 完整文本 + yoursatan 2026 版权）
+  - 5.1.13 ✅ 原型归档：git mv index.html → prototype/index.html + style.css → prototype/style.css + script.js → prototype/script.js（保留 rename 历史）
+  - 5.1.14 ✅ docs/ 目录：git mv 开发规划.md → docs/开发规划.md（保留 rename 历史）；README.md 链接可达
+  - pnpm-workspace.yaml 清理：移除 allowBuilds 占位符（esbuild/vue-demi "set this to true or false"）→ 改用 .npmrc onlyBuiltDependencies 统一管理
+  - §5 待办：5.1.9 / 5.1.10 / 5.1.13 / 5.1.14 四项打勾删除线
+  - §14 验证命令：Step 12 / 13 实测填入
+  - §2 快照进度：M0 90% → 95%
+⚠️ 遗留
+  - 5.1.8 原型迁移（P1）：未做，工作量最大，可在 M1 引擎开发期间并行推进
+  - 5.1.12 apps/server（P2）：未做，明确标注可延后 M4
+  - 5.1.11 Tauri（P2）：Rust 未安装，跳过
+  - pnpm ERR_PNPM_IGNORED_BUILDS 警告仍存在（esbuild + vue-demi postinstall 脚本被跳过），不影响功能
+🚨 阻塞
+  - 0（当前无活跃阻塞项）
 
-## 18. 历史基线 vs 当前进度对比
-
-| 维度 | 基线 commit `b1a4e6c` (Initial commit) | 当前（M0 Step 2-8 完成后）|
+| 维度 | 基线 commit `b1a4e6c` (Initial commit) | 当前（M0 Step 2-8 + 5.1.9/10/13/14 完成后）|
 |---|---|---|
-| **代码文件数** | 5 (.gitignore + 原型 3 件 + 规划 md) | 5 → 95+（新增 apps/web/ 43 文件 + vitest workspace 3 config + 2 smoke test；packages/shared 8 + packages/core 15；根配置 12；构建产物 3 包 dist 全部）|
-| **包管理** | 无 package.json | ✅ pnpm workspace（4 包：@omniflow/shared + @omniflow/core + @omniflow/web + 根 workspace meta）；lockfile pnpm-lock.yaml 已更新 478 包 resolve，apps/web + vitest 额外 92 包；pnpm 11 特有 `.npmrc onlyBuiltDependencies` 白名单 9 条（esbuild 7 + vue-demi）|
-| **构建产物** | 无 | ✅ packages/shared/dist/ (6 files) + packages/core/dist/ (6 files) + apps/web/dist/ (4 files, 1760 modules) |
-| **UI 形态** | 纯静态原型（浏览器 file://） | ✅ Vue 3.5 SFC 应用壳 + 27 Hash Router + Element Plus 290+ 图标 + Pinia 3 store + theme 22 tokens |
-| **引擎能力** | 0%（仅文档设计） | ≈3%（接口类型 + 占位导出 + 规则工坊 mock）；IR 类型被 apps/web 3 stores 真实消费 → 双端类型共用链路打通 |
-| **测试覆盖** | 0%（无测试框架）| ✅ Vitest 2.1.9 workspace 模式：core(node) + web(jsdom) 两 project；4 smoke tests passed；v8 coverage text+html+lcov 输出；@vue/test-utils 2.4.5 mount 渲染验证 OK |
+| **代码文件数** | 5 (.gitignore + 原型 3 件 + 规划 md) | 5 → 110+（apps/web 43 + vitest 5 + packages/ui 8 + README + LICENSE + prototype/ 3 件 git mv + docs/ 1 件 git mv；packages/shared 8 + packages/core 15；根配置 12；构建产物 4 包 dist 全部）|
+| **包管理** | 无 package.json | ✅ pnpm workspace（5 包：@omniflow/shared + @omniflow/core + @omniflow/web + @omniflow/ui + 根 meta）；lockfile pnpm-lock.yaml 478 包 resolve；pnpm 11 `.npmrc onlyBuiltDependencies` 白名单 9 条（esbuild 7 + vue-demi）|
+| **构建产物** | 无 | ✅ packages/shared/dist/ (6 files) + packages/core/dist/ (6 files) + apps/web/dist/ (4 files, 1760 modules) + packages/ui/dist/ (2 files, 11 modules) |
+| **UI 形态** | 纯静态原型（浏览器 file://） | ✅ Vue 3.5 SFC 应用壳 + 27 Hash Router + Element Plus 290+ 图标 + Pinia 3 store + theme 22 tokens + packages/ui 3 共享组件 |
+| **引擎能力** | 0%（仅文档设计） | ≈3%（接口类型 + 占位导出 + 规则工坊 mock）；IR 类型被 apps/web 3 stores + packages/ui 真实消费 → 双端类型共用链路打通 |
+| **测试覆盖** | 0%（无测试框架）| ✅ Vitest 2.1.9 workspace 模式：core(node) + web(jsdom) 两 project；4 smoke tests passed；v8 coverage text+html+lcov 输出 |
 | **CI/CD** | 无 | 无（Step 9 建 workflow）|
-| **远程同步** | 未关联 GitHub | ✅ 已关联 origin=https://github.com/yoursatan/OmniFlow，分支 init-project-plan-R7Bn1J，累计 v0.1.0~v0.1.4 |
-| **文档完整度** | 规划文档 ≈95% | 规划 100% + 状态文档 100%(含 Step2-8 实证数据 + 待办 5.1.5/5.1.6/5.1.7 打勾 + §14 Step6/7/8/10/11 实测) + 记忆文档 100%（→ #005 含本次）|
+| **远程同步** | 未关联 GitHub | ✅ 已关联 origin=https://github.com/yoursatan/OmniFlow，分支 init-project-plan-R7Bn1J，累计 v0.1.0~v0.1.5 |
+| **文档完整度** | 规划文档 ≈95% | ✅ 规划 100%（docs/开发规划.md）+ README.md（项目介绍+免责声明+快速开始+路线图）+ LICENSE(GPL-3.0) + 状态文档 100%(§5 待办 11/13 打勾 + §14 Step 2-8/10-13 实测) + 记忆文档 100%（→ #006 含本次）|
 
 ---
 
