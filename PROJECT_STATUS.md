@@ -943,6 +943,44 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 追加一条你本次的记录。
 ```
 
+## 20. 关联项目（参考仓库）
+
+> M2 引擎进阶（JS 沙箱 / 解析规则 / 桌面端实现）时可参考以下开源项目的架构与实现细节。按 **主参考 / 同构对比 / 历史参考** 分类。
+
+### 20.1 主参考（直接对齐 OmniFlow 目标域）
+
+| 优先级 | 名称 | 仓库链接 | 技术栈 | 参考价值 |
+| :----- | :--- | :------- | :----- | :------- |
+| ★★★ | **Legado 阅读（官方主仓）** | <https://github.com/LegadoTeam/legado> | Kotlin / Android / JSoup / Rhino JS 引擎 | OmniFlow 书源格式 **事实标准来源**；`BookSource.kt` 30+ 字段定义 / JSoup 自定义选择器语法 / `@js:` 动态脚本沙箱（Rhino→QuickJS 迁移参考）/ 搜索-目录-正文 五段式管道原版实现；真实书源 fixtures 已对齐（§5.3.1） |
+| ★★★ | **Legado Desktop** | <https://github.com/ExTrakf/legado-desktop> | Kotlin / Compose Desktop / JVM | Legado 官方 Kotlin 代码的桌面移植；JVM→JS 同构迁移参考（选择器 / 适配器 / 沙箱桥接）；书源导入导出格式、网络代理、WebView 嗅探实现 |
+| ★★☆ | **any-reader** | <https://github.com/yoursatan/any-reader> | TypeScript / Node 生态 | 同团队 Node/TS 版聚合阅读器原型；从 TS 层复用 `packages/core` 接口设计；书源规则 AST、管道执行、字段 extract 历史参考 |
+| ★★☆ | **ESO 影视聚合** | <https://github.com/mabDc/eso> | Java / Android | 影视书源格式（CMS / MacCMS / 苹果 CMS / 飞蛾 CMS）参考；视频嗅探规则、多解析接口切换、播放器内核选择逻辑；对 OmniFlow 的 `kind=video` / `SourceFormat=cms-*` 适配器实现有直接价值 |
+| ★★☆ | **HikerView（ hikar ）** | <https://github.com/qiusunshine/hikerView> | Kotlin / Android | 规则驱动的 **通用列表解析器**；与 Legado 不同的 JSON/XML 规则语言设计；可对比 RulePipeline v2 的段-步语义，防止遗漏高级场景（分页、嵌套列表、懒加载） |
+| ★★☆ | **zyfun 资源站聚合** | <https://github.com/Hiram-Wong/zyfun> | TypeScript / Next.js / Node | 纯 TypeScript 全栈资源聚合实现；CMS API 签名、搜索去重、豆瓣 IMDB 元数据补齐；OmniFlow `aggregate/` 目录聚合层（M3）参考 |
+
+### 20.2 按 OmniFlow 里程碑映射
+
+| OmniFlow 里程碑 | 最相关仓库 | 对应模块 / 接口 |
+| :-------------- | :--------- | :-------------- |
+| **M2 JS 沙箱** | LegadoTeam/legado → `app/src/main/java/io/legado/app/model/explore/` + JS 脚本执行器 | `packages/core/src/jsruntime/index.ts` QuickJS WASM 宿主、`java.*` 兼容层、同步桥 Atomics 方案 |
+| **M2 CMS/ESO 适配器** | mabDc/eso → 解析规则 / 嗅探器 | `packages/core/src/adapters/` 新增 `EsoAdapter` / `CmsAdapter`，`SourceFormat=cms-maccms/cms-applecms/*` |
+| **M3 Aggregate 聚合层** | Hiram-Wong/zyfun → 搜索去重、豆瓣元数据 | `packages/core/src/aggregate/`（跨源去重 / 排序 / 评分补全） |
+| **M4 Tauri 桌面端** | ExTrakf/legado-desktop → Compose Desktop 窗口、文件系统 | `apps/desktop/` 对接 Rust（WebView 嗅探、本地书库 SQLite、系统代理设置） |
+| **M4 可选 Node 代理** | yoursatan/any-reader → Node 代理层 | `apps/server/` CORS 代理、订阅源拉取、缓存层 |
+
+### 20.3 快速定位
+
+```bash
+# Legado 书源定义核心文件（当前已对照）
+# https://github.com/LegadoTeam/legado/blob/master/app/src/main/java/io/legado/app/data/entities/BookSource.kt
+
+# Legado JS 执行入口（M2 必看）
+# https://github.com/LegadoTeam/legado/blob/master/app/src/main/java/io/legado/app/help/JsExtensions.kt
+
+# ESO CMS 解析接口参考（kind=video 适配）
+# https://github.com/mabDc/eso/search?q=parseRule
+```
+
 ***
 
 **本文件结束。如果读到这里，请同时打开** **`.agent-memory.md`** **查看极简记忆摘要。**
