@@ -1,11 +1,12 @@
 # 汇流 OmniFlow · 项目状态文档
 
-> **文档版本**：v1.0
+> **文档版本**：v1.1
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
-> **当前阶段**：M0 基建启动前（规划+原型完成，工程初始化待执行）
-> **Git Commit**：b1a4e6c（Initial commit）
-> **工作分支**：`init-project-plan-R7Bn1J`
+> **当前阶段**：M0 基建启动前（阻塞项已全部确认，等待 Step 2 执行）
+> **Git Commit**：04897b4（docs: PROJECT_STATUS v1.0 + .agent-memory）— 下一 commit 更新时同步改这里
+> **工作分支**：`init-project-plan-R7Bn1J`（已推送至 GitHub `origin/init-project-plan-R7Bn1J`）
+> **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
 ---
 
@@ -369,9 +370,9 @@ M0 完成后仓库至少应包含以下 **25+** 新增文件/目录（P0=15，P1
 
 | # | 阻塞项 | 阻塞范围 | 提出时间 | 解决状态 | 需要用户动作 |
 |---|---|---|---|---|---|
-| **B1** | GitHub 仓库 URL 未提供 | 5.1 初始化 Git 同步 | 2026-08-29 | ❌ 待用户提供 | 请用户提供 GitHub 仓库地址（如 `https://github.com/yoursatan/OmniFlow.git`），或告知是否需要在本地先 `git remote add` 一个占位地址 |
-| **B2** | Rust 工具链未确认安装 | M0 任务 5.1.11（Tauri 桌面端）| 2026-08-29 | ⚠️ 可选阻塞（M0 P2）| 执行 `rustc --version` 确认；如未安装，M0 桌面端跳过，仅 web 先行 |
-| **B3** | 原型根文件归档策略确认 | 5.1.13 prototype/ 归档 | 2026-08-29 | ⚠️ 待确认 | 方案 A（推荐）：`git mv index.html style.css script.js prototype/`；方案 B：复制保留 + 根目录新文件覆盖 |
+| **B1** | GitHub 仓库 URL 未提供 | 5.1 初始化 Git 同步 | 2026-08-29 | ✅ **已解决**：`https://github.com/yoursatan/OmniFlow.git` | 无需；远程 `origin` 已配置，分支已 push |
+| **B2** | Rust 工具链未确认安装 | M0 任务 5.1.11（Tauri 桌面端）| 2026-08-29 | ✅ **已确认未安装**：M0 桌面端 (P2) 跳过，仅 Web 先行；必要时可后补 | 如需桌面端，`winget install Rustlang.Rustup.MSVC` 后执行 `rustup default stable` |
+| **B3** | 原型根文件归档策略确认 | 5.1.13 prototype/ 归档 | 2026-08-29 | ✅ **已确认方案 A**：M0 Step 12 时执行 `git mv index.html style.css script.js prototype/`，保留 Git 历史 | 无需 |
 
 ---
 
@@ -382,7 +383,7 @@ M0 完成后仓库至少应包含以下 **25+** 新增文件/目录（P0=15，P1
 ```
 M0 执行顺序（14 步 · 预计 2 周）
 ═══════════════════════════════════════════════════
-Step 1    [解决阻塞 B1+B3]  用户确认 GitHub URL + 归档策略
+Step 1    [阻塞已解决: B1=GitHub URL已配置 B2=跳过桌面端 B3=方案A git mv归档] ✅
     ↓
 Step 2    [P0]  创建根级 package.json + pnpm-workspace.yaml + turbo.json
            └── 验证：pnpm install 无错误
@@ -599,8 +600,6 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
   - 开发规划文档 v3.0 (19 章全)
   - 15 屏可交互 UI 原型（HTML/CSS/JS 纯静态）
   - .gitignore 建立（Node/Python/编辑器）
-  - PROJECT_STATUS.md v1.0（本文档） 建立
-  - .agent-memory.md（极简仓库记忆） 建立
 ⚠️ 遗留
   - Monorepo 工程骨架未建（M0 Step 2 起）
   - GitHub 远程 URL 待用户提供（阻塞 B1）
@@ -609,7 +608,20 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
   - B1: GitHub 仓库 URL 未提供 → 无法 git push
   - B3: 原型文件归档策略（git mv vs 复制）待用户确认
 
-## v0.1.1 · [待 Agent 填写 阶段名] (待填日期) · [待填]
+## v0.1.1 · 用户确认+文档同步 (2026-08-29) · 初始化 Agent
+✅ 完成
+  - 远程 origin 配置：https://github.com/yoursatan/OmniFlow.git
+  - git push -u origin init-project-plan-R7Bn1J 成功（GitHub 首次同步 PR 链接已生成）
+  - 阻塞项 B1/B2/B3 全部确认：B1=URL已给，B2=Rust未装→M0桌面端(P2)跳过仅Web先行，B3=方案A git mv 归档
+  - PROJECT_STATUS.md 升级到 v1.1（头部/Git信息/阻塞表/执行顺序Step1/基线表/提示词模板A 共6处更新）
+  - .agent-memory.md 追加记录 #002（本次用户确认+同步）
+⚠️ 遗留
+  - Monorepo 骨架仍未建 → 下一步直接 M0 Step 2
+  - Step 14 (Tauri) 将因 Rust 未安装跳过，待后期补
+🚨 阻塞
+  - 无（当前 0 个活跃阻塞项，M0 Step 2 可立即启动）
+
+## v0.1.2 · [待 Agent 填写 阶段名] (待填日期) · [待填]
 ✅ 完成
   - (此处由下一 Agent 追加)
 ⚠️ 遗留
@@ -631,7 +643,7 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 | **引擎能力** | 0%（仅文档设计） | 0%（M1 才开始） |
 | **测试覆盖** | 0%（无测试框架）| 0% |
 | **CI/CD** | 无 | 无 |
-| **远程同步** | 未关联 GitHub | ❌ 未关联（等待 B1 解决） |
+| **远程同步** | 未关联 GitHub | ✅ 已关联（origin=https://github.com/yoursatan/OmniFlow.git），分支 init-project-plan-R7Bn1J 已 push |
 | **文档完整度** | 规划文档 ≈95% | 规划 100% + 状态文档 100% + 记忆文档 100% |
 
 ---
@@ -654,7 +666,7 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 4. 对照 §11 下一步执行顺序，告诉我你当前该从哪一步开始，并给出执行计划。
 5. 任务完成离开时，必须严格按 §15.1 Leave-Behind Checklist 留下所有东西。
 
-项目 GitHub URL: <等待用户确认后粘贴>
+项目 GitHub URL: https://github.com/yoursatan/OmniFlow.git
 本次任务范围: <说明本次要做的具体 Step 范围，如 "M0 Step 2-5">
 ```
 
