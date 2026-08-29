@@ -1,29 +1,34 @@
 <template>
-  <div class="omni-card">
-    <h2>设置 · 数据备份</h2>
-    <p class="omni-muted">源仓库、书架/影视库进度、规则、设置的导入 / 导出。Web 端走 IndexedDB + JSON 序列化。</p>
-    <el-space wrap style="margin: 14px 0;">
-      <el-button type="primary" :icon="Download">导出 JSON 备份</el-button>
-      <el-button :icon="Upload">导入 JSON 备份</el-button>
-      <el-button :icon="Delete" type="danger">清空全部本地数据</el-button>
-      <el-tag effect="dark" type="success">IndexedDB · 0.3MB</el-tag>
-    </el-space>
-    <el-table :data="rows" style="max-width: 820px;">
-      <el-table-column prop="name" label="数据域" />
-      <el-table-column prop="count" label="记录数" width="120" />
-      <el-table-column prop="size" label="大小" width="120" />
-      <el-table-column prop="updated" label="最近更新" />
-    </el-table>
+  <div class="settings-section" id="sec-backup">
+    <h3>💾 数据备份</h3>
+    <div class="sh-sub">SQLite（桌面）/ Dexie（Web）双驱动，上层无感</div>
+    <div class="setting-row">
+      <div class="setting-info"><b>导出全部数据</b><span>源配置、书架、历史、阅读进度、规则</span></div>
+      <div class="setting-input"><button class="btn sm">📤 导出</button></div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info"><b>导入数据</b><span>从备份文件恢复所有数据</span></div>
+      <div class="setting-input"><button class="btn sm">📥 导入</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info"><b>WebDAV 同步</b><span>书源 / 书架 / 阅读进度 / 规则 · 增量同步</span></div>
+      <div class="switch on"></div>
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div class="setting-info"><b>本地数据库</b><span>SQLite + Dexie 索引 · 源/书架/历史/进度</span></div>
+      <div class="setting-input col" style="width:100%">
+        <div style="font-size:11.5px;color:var(--muted);width:100%;text-align:left">已用 186 MB / 512 MB</div>
+        <div class="storage-bar"><i style="width:36%"></i></div>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info"><b>缓存策略</b><span>封面 / 章节正文 / 播放直链</span></div>
+      <div class="seg"><span>不缓存</span><span class="on">智能</span><span>全缓存</span></div>
+    </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { Download, Upload, Delete } from '@element-plus/icons-vue';
-const rows = [
-  { name: '源仓库 (sources)',        count: 16, size: '32 KB',  updated: '2026-08-29 10:21' },
-  { name: '书架 (books)',            count: 28, size: '16 KB',  updated: '2026-08-29 09:55' },
-  { name: '影视库 (videos)',         count: 16, size: '12 KB',  updated: '2026-08-28 23:40' },
-  { name: '阅读进度 (progress)',     count: 120, size: '56 KB', updated: '2026-08-29 10:00' },
-  { name: '设置 (settings)',         count: 1,  size: '4 KB',   updated: '2026-08-29 00:00' },
-];
-// TODO: 对接 Dexie DB 导出/导入
+// 数据备份设置（静态展示；状态持久化待接入）
 </script>

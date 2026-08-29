@@ -1,79 +1,82 @@
 <template>
-  <div class="comic">
-    <div class="top omni-card" style="margin-bottom: 12px;">
-      <div style="display:flex; align-items:center; gap:14px;">
-        <el-button :icon="ArrowLeft" circle text @click="$router.back()" />
-        <div style="flex:1;">
-          <div class="t1">示例漫画 · {{ id }}</div>
-          <div class="t2 omni-muted">漫画阅读器 · 屏 #15 · 第 12 话 / 共 38 话</div>
-        </div>
-        <el-radio-group v-model="mode" size="small">
-          <el-radio-button label="double">双页</el-radio-button>
-          <el-radio-button label="single">单页</el-radio-button>
-          <el-radio-button label="scroll">条漫</el-radio-button>
-        </el-radio-group>
-        <el-button-group>
-          <el-button :icon="DArrowLeft" :disabled="page<=1" @click="page = Math.max(1, page-1)" />
-          <el-button plain disabled>{{ page }} / {{ total }}</el-button>
-          <el-button :icon="DArrowRight" :disabled="page>=total" @click="page = Math.min(total, page+1)" />
-        </el-button-group>
-      </div>
-      <el-slider v-model="page" :min="1" :max="total" style="margin-top: 10px;" />
+  <div class="comic-wrap">
+    <div class="comic-topbar">
+      <button class="btn sm ghost" @click="noop">☰ 章节</button>
+      <div class="ct-mid">电锯人 · <span>第 {{ currentChapter }} 话 · 暗之恶魔</span></div>
+      <span class="tag cy">{{ modeTag }}</span>
     </div>
-
-    <div class="omni-card stage">
-      <div class="pages" :class="`mode-${mode}`">
-        <div v-for="p in (mode === 'double' ? 2 : 1)" :key="p" class="page">
-          <div class="pg-num">P.{{ (page - 1) + p }}</div>
-          <div class="panel" :style="{ background: panels[p-1] }"></div>
+    <div class="comic-page" :class="mode">
+      <div class="comic-panel left">
+        <div style="text-align:center;color:var(--muted)">
+          <div style="font-size:48px;margin-bottom:10px">📖</div>
+          <div>第 {{ currentChapter }} 话 · 左页</div>
+          <div style="font-size:11px;margin-top:6px">点击或按 → 翻页</div>
+        </div>
+      </div>
+      <div class="comic-panel right">
+        <div style="text-align:center;color:var(--muted)">
+          <div style="font-size:48px;margin-bottom:10px">📖</div>
+          <div>第 {{ currentChapter }} 话 · 右页</div>
+          <div style="font-size:11px;margin-top:6px">第 {{ currentPage }} / {{ totalPages }} 页</div>
         </div>
       </div>
     </div>
-
-    <div class="omni-card bottom omni-muted">
-      模式说明：<b>双页</b>（漫画卷阅读）/ <b>单页</b>（竖屏）/ <b>条漫</b>（长页滚动，Webtoon）。
-      M5 接入翻页动画 & 缓存下 3 页图像预加载。
+    <div class="comic-ctl">
+      <button class="btn sm" @click="flipChapter(-1)">‹ 上一话</button>
+      <button class="btn sm" @click="flipChapter(1)">下一话 ›</button>
+      <div class="sep"></div>
+      <div class="comic-mode">
+        <button :class="{ on: mode === 'dual' }" @click="pickMode('dual')">双页</button>
+        <button :class="{ on: mode === 'single' }" @click="pickMode('single')">单页</button>
+        <button :class="{ on: mode === 'scroll' }" @click="pickMode('scroll')">条漫</button>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <span style="font-size:12px;color:var(--muted);font-family:var(--mono)">{{ currentPage }}/{{ totalPages }}</span>
+        <input type="range" min="1" :max="totalPages" :value="currentPage" style="width:130px" @input="gotoPage(+($event.target as HTMLInputElement).value)">
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { ArrowLeft, DArrowLeft, DArrowRight } from '@element-plus/icons-vue';
-const props = defineProps<{ id: string }>();
-void props;
-const mode = ref<'double' | 'single' | 'scroll'>('double');
-const page = ref(1);
-const total = ref(38);
-const panels = [
-  'linear-gradient(135deg, #1b1f2a, #2b3040)',
-  'linear-gradient(135deg, #221a2f, #3a2a4a)',
-];
+import { ref, computed } from 'vue';
+defineProps<{ id: string }>();
+
+const mode = ref<'dual' | 'single' | 'scroll'>('dual');
+const currentPage = ref(1);
+const totalPages = ref(32);
+const currentChapter = ref(148);
+const modeTag = computed(() => mode.value === 'dual' ? '双页模式' : mode.value === 'single' ? '单页模式' : '条漫模式');
+
+function pickMode(m: 'dual' | 'single' | 'scroll') {
+  mode.value = m;
+}
+function flipChapter(dir: number) {
+  currentChapter.value = Math.max(1, currentChapter.value + dir);
+  currentPage.value = 1;
+}
+function gotoPage(p: number) {
+  currentPage.value = Math.max(1, Math.min(totalPages.value, p));
+}
+function noop() {}
 </script>
 
 <style scoped>
-.comic { max-width: 1200px; margin: 0 auto; }
-.top .t1 { font-weight: 700; }
-.top .t2 { font-size: 12px; margin-top: 2px; }
-.stage {
-  background: #000;
-  min-height: 620px;
-  padding: 24px;
-  display: flex; align-items: center; justify-content: center;
-}
-.pages { display: flex; gap: 2px; align-items: center; justify-content: center; }
-.mode-scroll { flex-direction: column; width: 100%; gap: 0; }
-.page {
-  position: relative;
-  background: #111;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.mode-double .page { aspect-ratio: 3 / 4; width: clamp(240px, 40vw, 460px); }
-.mode-single .page { aspect-ratio: 3 / 4; width: min(70vw, 620px); }
-.mode-scroll .page { width: 100%; aspect-ratio: unset; height: 900px; border-radius: 0; }
-.page + .page { border-left: 1px solid #000; }
-.pg-num { position: absolute; top: 10px; right: 12px; color: rgba(255,255,255,0.6); font-size: 12px; font-variant-numeric: tabular-nums; }
-.panel { width: 100%; height: 100%; }
-.bottom { padding: 10px 18px; font-size: 12px; }
+.comic-wrap { height: calc(100vh - 122px); display: flex; flex-direction: column; align-items: center; }
+.comic-topbar { display: flex; align-items: center; width: min(900px, 100%); margin-bottom: 12px; gap: 10px; }
+.comic-topbar .ct-mid { flex: 1; text-align: center; font-size: 13px; color: var(--muted); }
+.comic-page { width: min(900px, 100%); flex: 1; display: flex; gap: 4px; align-items: center; justify-content: center; overflow: hidden; }
+.comic-page.dual .comic-panel { height: 100%; flex: 1; }
+.comic-page.single .comic-panel:last-child { display: none; }
+.comic-page.single .comic-panel { flex: 0 0 62%; }
+.comic-page.scroll { flex-direction: column; gap: 10px; overflow-y: auto; align-items: stretch; justify-content: flex-start; }
+.comic-page.scroll .comic-panel { height: 420px; flex: none; }
+.comic-panel { border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted); border: 1px solid var(--line); }
+.comic-panel.left { background: linear-gradient(90deg, #1a1f2e, #151b26); }
+.comic-panel.right { background: linear-gradient(90deg, #151b26, #1a1f2e); }
+.comic-ctl { display: flex; gap: 10px; margin-top: 14px; align-items: center; width: min(900px, 100%); }
+.comic-ctl .sep { width: 1px; height: 18px; background: var(--line2); }
+.comic-mode { display: flex; gap: 4px; background: var(--bg3); border-radius: 8px; padding: 3px; }
+.comic-mode button { padding: 5px 12px; font-size: 12px; border-radius: 6px; background: transparent; border: none; color: var(--muted); cursor: pointer; font-family: var(--font); }
+.comic-mode button.on { background: var(--bg4); color: #fff; }
 </style>

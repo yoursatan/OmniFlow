@@ -1,40 +1,45 @@
 <template>
-  <el-row :gutter="16" style="min-height: calc(100vh - 120px);">
-    <el-col :span="5">
-      <div class="omni-card" style="height: 100%;">
-        <div class="st-title">设置 · 分区导航</div>
-        <el-menu
-          :default-active="$route.path"
-          router
-          background-color="transparent"
-          text-color="var(--text-1)"
-          active-text-color="#ffffff"
-          class="st-menu"
-        >
-          <el-menu-item index="/settings/appearance"><el-icon><Brush /></el-icon><span>外观</span></el-menu-item>
-          <el-menu-item index="/settings/network"><el-icon><Connection /></el-icon><span>网络</span></el-menu-item>
-          <el-menu-item index="/settings/sandbox"><el-icon><Lock /></el-icon><span>安全沙箱</span></el-menu-item>
-          <el-menu-item index="/settings/backup"><el-icon><Files /></el-icon><span>数据备份</span></el-menu-item>
-          <el-menu-item index="/settings/playback"><el-icon><Reading /></el-icon><span>播放与阅读</span></el-menu-item>
-          <el-menu-item index="/settings/about"><el-icon><InfoFilled /></el-icon><span>关于</span></el-menu-item>
-        </el-menu>
+  <div class="settings-layout">
+    <div class="settings-nav">
+      <div v-for="n in navItems" :key="n.key" class="settings-nav-item"
+        :class="{ on: route.path === n.path }" @click="$router.push(n.path)">
+        {{ n.label }}
       </div>
-    </el-col>
-    <el-col :span="19">
+    </div>
+    <div class="settings-content">
       <router-view />
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { Brush, Connection, Lock, Files, Reading, InfoFilled } from '@element-plus/icons-vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 // 11 设置 = 左分区导航 + 右侧子路由
+// prototype 的 media 分区对应路由 playback（播放与阅读）
+const navItems = [
+  { key: 'appearance', label: '🎨 外观主题', path: '/settings/appearance' },
+  { key: 'network', label: '🌐 网络设置', path: '/settings/network' },
+  { key: 'sandbox', label: '🔒 安全沙箱', path: '/settings/sandbox' },
+  { key: 'backup', label: '💾 数据备份', path: '/settings/backup' },
+  { key: 'playback', label: '▶ 播放与阅读', path: '/settings/playback' },
+  { key: 'about', label: 'ℹ 关于', path: '/settings/about' },
+];
 // TODO: 接入 Pinia globalState 持久化设置 (localStorage / Dexie)
 </script>
 
 <style scoped>
-.st-title { font-weight: 700; margin-bottom: 10px; color: var(--text-1); }
-.st-menu { border: 1px solid var(--border); border-radius: 8px; padding: 6px; background: var(--bg-2); }
-.st-menu :deep(.el-menu-item) { border-radius: 6px; }
-.st-menu :deep(.el-menu-item.is-active) { background: var(--brand-soft); color: #fff; }
+.settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; align-items: start; }
+.settings-nav { background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+.settings-nav-item {
+  padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  color: #c4cad8; transition: all .15s; display: flex; align-items: center; gap: 10px;
+}
+.settings-nav-item:hover { background: var(--bg3); }
+.settings-nav-item.on { background: rgba(108, 124, 255, .15); color: #fff; }
+.settings-content {
+  background: var(--bg2); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px; min-height: 560px;
+}
 </style>

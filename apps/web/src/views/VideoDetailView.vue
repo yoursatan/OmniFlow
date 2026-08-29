@@ -1,72 +1,112 @@
 <template>
-  <div class="omni-card detail">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <div class="poster">🎬</div>
-      </el-col>
-      <el-col :span="18">
-        <h2 style="margin-top: 0;">影片详情 · 屏 #12</h2>
-        <p class="omni-muted" style="margin-bottom: 14px;">
-          原型参数：<code>/video/{{ id }}</code> &nbsp; 海报 / 简介 / 选集 / 多源线路 tab / 解析接口切换 / 换源抽屉
-        </p>
-        <div style="margin-bottom: 10px;">
-          <span class="omni-chip">剧情</span>
-          <span class="omni-chip">科幻</span>
-          <span class="omni-chip">2026</span>
-          <span class="omni-chip">24 集全</span>
-        </div>
-        <p style="line-height: 1.8;">
-          这是一个精彩的示例影片简介。某年某月，主角踏上旅程……<br />
-          <span class="omni-muted">（M4 接入真实源之后，此处拉取详情段 RulePipeline 的输出）</span>
-        </p>
-        <div style="margin-top: 16px;">
-          <el-button type="primary" size="large" :icon="VideoPlay" @click="$router.push(`/player/${id}`)">
-            ▶ 立即播放
-          </el-button>
-          <el-button size="large" :icon="Star">收藏</el-button>
-          <el-button size="large" :icon="Share">分享</el-button>
-        </div>
-
-        <h3 style="margin-top: 28px;">线路 <el-tag size="small" effect="dark" style="margin-left:6px;">共 4 条</el-tag></h3>
-        <el-tabs v-model="line">
-          <el-tab-pane label="线路 ① CMS" name="a">
-            <div class="ep-list">
-              <el-tag
-                v-for="n in 24"
-                :key="n"
-                size="default"
-                :effect="n <= 7 ? 'dark' : 'plain'"
-                :type="n <= 7 ? 'primary' : 'info'"
-                class="ep"
-                @click="$router.push(`/player/${id}`)"
-              >{{ n.toString().padStart(2, '0') }}</el-tag>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="线路 ② 解析池" name="b"><p class="omni-muted">解析接口 ×6，M4 实现自动切换</p></el-tab-pane>
-          <el-tab-pane label="线路 ③ 备用" name="c"><p class="omni-muted">低画质 720P 备用</p></el-tab-pane>
-          <el-tab-pane label="线路 ④ 4K 专线" name="d"><p class="omni-muted">（需手动导入配置）</p></el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
+  <div class="detail-hero">
+    <div class="poster p5">
+      <div class="ph">
+        <div class="t">三体</div>
+        <div class="s">2023 · 电视剧</div>
+      </div>
+      <div style="position:absolute;top:8px;right:8px">
+        <span class="tag gold" style="background:rgba(245,197,24,.25);font-weight:700">9.4</span>
+      </div>
+    </div>
+    <div class="info" style="flex:1;min-width:0">
+      <h2>三体 <span class="tag green">4 源可用</span></h2>
+      <div class="meta-line">
+        <span><b>30</b> 集全</span>
+        <span>科幻 / 奇幻</span>
+        <span>2023</span>
+        <span>中国大陆</span>
+        <span>张鲁一 / 于和伟 / 陈瑾</span>
+      </div>
+      <div class="desc-block">
+        纳米材料学家汪淼被警察史强带到联合作战中心，参与侦破一起科学家连环自杀案件。倒计时的尽头是什么？幽灵倒计时、科学边界、三日凌空……一个宏大的宇宙图景在人类面前徐徐展开。
+      </div>
+      <div class="parse-row">
+        <span class="tag acc">解析接口</span>
+        <span class="tag" style="cursor:pointer" @click="noop">JSON 池-A（默认）</span>
+        <span class="tag" style="cursor:pointer" @click="noop">嗅探模式</span>
+        <span class="tag" style="cursor:pointer" @click="noop">极速解析</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn primary" @click="$router.push(`/player/${id}`)">▶ 立即播放</button>
+        <button class="btn" @click="noop">+ 收藏</button>
+        <button class="btn" @click="noop">⇄ 换源 4</button>
+        <button class="btn" @click="noop">⤓ 下载</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="padding:16px">
+    <div class="ep-tabs">
+      <span class="tag cy">播放线路</span>
+      <span
+        v-for="(src, i) in sources"
+        :key="i"
+        class="tag src-tab"
+        :class="{ on: i === currentSource }"
+        style="cursor:pointer"
+        @click="pickSource(i)"
+      >{{ src }}</span>
+      <span style="margin-left:auto;color:var(--cy);font-size:12px;cursor:pointer" @click="toggleOrder">
+        ⇅ {{ ascending ? '正序' : '倒序' }}
+      </span>
+    </div>
+    <div class="ep-grid">
+      <div
+        v-for="ep in episodes"
+        :key="ep.id"
+        class="ep"
+        :class="{ on: ep.id === currentEp }"
+        @click="pickEp(ep.id)"
+      >{{ ep.title }}</div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { VideoPlay, Star, Share } from '@element-plus/icons-vue';
-const props = defineProps<{ id: string }>();
-const line = ref('a');
-// TODO(M4): 从 core.aggregate.detail(props.id) 取详情 + 多线路，聚合换源
+defineProps<{ id: string }>();
+
+const sources = ref(['量子资源', '非凡CMS', '蓝光影院', '快手影视']);
+const currentSource = ref(0);
+const episodes = ref(
+  Array.from({ length: 30 }, (_, i) => ({
+    id: i + 1,
+    title: `第${String(i + 1).padStart(2, '0')}集`,
+  }))
+);
+const currentEp = ref(1);
+const ascending = ref(true);
+
+function pickSource(i: number) {
+  currentSource.value = i;
+}
+function pickEp(id: number) {
+  currentEp.value = id;
+}
+function toggleOrder() {
+  ascending.value = !ascending.value;
+  episodes.value = [...episodes.value].reverse();
+}
+function noop() {}
 </script>
 
 <style scoped>
-.poster {
-  aspect-ratio: 2 / 3;
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--brand-soft), var(--bg-3));
-  display: flex; align-items: center; justify-content: center; font-size: 90px;
-  border: 1px solid var(--border);
+.detail-hero { display: flex; gap: 24px; margin-bottom: 22px; }
+.detail-hero .poster { width: 190px; flex-shrink: 0; }
+.detail-hero h2 { font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.meta-line { display: flex; gap: 14px; color: var(--muted); font-size: 13px; margin: 10px 0; flex-wrap: wrap; }
+.meta-line b { color: var(--gold); }
+.desc-block { font-size: 13px; line-height: 1.8; color: #c4cad8; }
+.parse-row { display: flex; gap: 8px; align-items: center; margin: 16px 0 14px; flex-wrap: wrap; }
+.ep-tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+.ep-tabs .src-tab.on { background: rgba(108,124,255,.16); color: #fff; }
+.ep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.ep {
+  padding: 9px 8px; text-align: center; border-radius: 8px;
+  background: var(--bg3); border: 1px solid var(--line);
+  font-size: 12px; cursor: pointer; transition: all 0.15s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.ep-list { display: flex; flex-wrap: wrap; gap: 10px; }
-.ep { cursor: pointer; min-width: 46px; text-align: center; }
+.ep:hover { border-color: var(--acc-dim); color: var(--cy); }
+.ep.on { background: linear-gradient(135deg, var(--acc), #8b5cf6); color: #fff; border-color: transparent; font-weight: 700; }
 </style>

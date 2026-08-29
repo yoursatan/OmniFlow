@@ -92,7 +92,7 @@ const route = useRoute();
 const router = useRouter();
 
 const NAV_W = '240px';
-const HEADER_H = 52;
+const HEADER_H = '52px';
 
 type NavItem = { path: string; label: string; icon: unknown; badge?: string };
 const groups: Array<{ title: string; items: NavItem[] }> = [
