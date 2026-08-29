@@ -4,7 +4,7 @@
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
 > **当前阶段**：M0 基建启动前（阻塞项已全部确认，等待 Step 2 执行）
-> **Git Commit**：04897b4（docs: PROJECT_STATUS v1.0 + .agent-memory）— 下一 commit 更新时同步改这里
+> **Git Commit**：5d9a6b1（docs: v0.1.1 B1/B2/B3 同步）— 下一 commit 更新时同步改这里
 > **工作分支**：`init-project-plan-R7Bn1J`（已推送至 GitHub `origin/init-project-plan-R7Bn1J`）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
