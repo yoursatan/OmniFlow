@@ -57,6 +57,7 @@ export class PipelineExecutor {
 
     const events: RuleEvent[] = []
     let currentInput: string | object = ''
+    let pipelineResult: unknown = ''
 
     // 按段顺序执行
     for (const seg of pipeline.segments) {
@@ -106,6 +107,49 @@ export class PipelineExecutor {
 
         }
 
+        // 3. 如果段有 listRule + fields，执行列表+字段提取
+        if (seg.listRule && seg.fields) {
+          events.push({
+            seq: events.length,
+            type: 'step:enter',
+            segmentId: seg.id,
+            stepIndex: seg.steps.length,
+            action: 'list' as never,
+            inputSnippet: typeof currentInput === 'string'
+              ? (currentInput as string).slice(0, 200)
+              : undefined,
+          })
+          const listResult = this.router.extractList(
+            typeof currentInput === 'string' ? currentInput : JSON.stringify(currentInput),
+            seg.listRule,
+            seg.fields,
+            ctx
+          )
+          pipelineResult = listResult
+          events.push({
+            seq: events.length,
+            type: 'step:exit',
+            segmentId: seg.id,
+            stepIndex: seg.steps.length,
+            outputSnippet: `list[${listResult.length}]`,
+          })
+        } else if (seg.fields) {
+          // 仅字段提取（详情页模式）
+          const fieldResult = this.router.extractFields(
+            typeof currentInput === 'string' ? currentInput : JSON.stringify(currentInput),
+            seg.fields,
+            ctx
+          )
+          pipelineResult = fieldResult
+          events.push({
+            seq: events.length,
+            type: 'step:exit',
+            segmentId: seg.id,
+            stepIndex: seg.steps.length,
+            outputSnippet: JSON.stringify(fieldResult).slice(0, 200),
+          })
+        }
+
         events.push({ seq: events.length, type: 'segment:exit', segmentId: seg.id })
       } catch (e) {
         const error = e as Error
@@ -119,8 +163,10 @@ export class PipelineExecutor {
       }
     }
 
+    // 优先返回结构化结果（list/fields），否则返回最后一步的文本输出
+    const finalData = pipelineResult !== '' ? pipelineResult : currentInput
     return {
-      data: currentInput as T,
+      data: finalData as T,
       debugEvents: events,
     }
   }

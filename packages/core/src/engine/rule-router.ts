@@ -114,7 +114,10 @@ export class RuleRouter {
         for (const [field, rule] of Object.entries(fieldRules)) {
           try {
             // 字段规则在节点上下文中执行
-            const nodeHtml = String(node)
+            // cheerio 节点需转为 HTML 字符串，字符串直接使用
+            const nodeHtml = typeof node === 'string'
+              ? node
+              : String((node as { toString?: () => string })?.toString?.() ?? '')
             const fieldResult = this.execute(nodeHtml, rule, ctx)
             item[field] = fieldResult.text
           } catch {

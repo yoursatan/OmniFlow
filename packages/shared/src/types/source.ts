@@ -90,6 +90,20 @@ export interface RuleSegment {
   request?: Partial<OmniRequest>;
   /** 步骤列表；串行执行，前一步的 `data` 是下一步的输入 */
   steps: RuleStep[];
+  /**
+   * 可选：列表选择规则（Legado bookList / chapterList 模式）
+   * 当 listRule + fields 同时存在时，pipeline 使用 extractList 模式：
+   *   1. 用 listRule 从输入中选出节点列表
+   *   2. 对每个节点用 fields 中的规则提取字段
+   * 此时 steps 仍会先串行执行（用于前处理），最后一步输出作为 listRule 的输入
+   */
+  listRule?: string;
+  /**
+   * 可选：字段提取规则映射（Legado name/author/coverUrl/bookUrl 模式）
+   * key = 字段名，value = 规则字符串
+   * 与 listRule 配合用于列表场景；单独存在时用于详情页字段提取
+   */
+  fields?: Record<string, string>;
   /** 可选：段失败重试次数（默认 0） */
   retries?: number;
   /** 可选：下一步骤失败是否中止整条 pipeline（默认 true） */

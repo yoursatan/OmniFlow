@@ -92,6 +92,16 @@ export function detectMode(rule: string): SegmentMode {
   if (rule.startsWith('@js:') || rule.startsWith('<js>')) return 'js'
   if (rule.startsWith(':')) return 'regex'
   if (rule.startsWith('@css:')) return 'css'
+  // JSoup 显式前缀：class. / tag. / id.
+  if (/^(class|tag|id)\./.test(rule)) return 'jsoup'
+  // CSS 选择器：以 . 或 # 开头
+  if (rule.startsWith('.') || rule.startsWith('#')) return 'css'
+  // JSoup 裸动作名（text, href, src, html, content, all, ownText, textNodes）
+  // 仅当整个规则（去除 @action 和 ##regex 后）就是这些词时
+  const bareWord = rule.split('@')[0]!.split('##')[0]!.trim()
+  if (/^(text|href|src|html|content|all|ownText|textNodes)$/.test(bareWord)) return 'jsoup'
+  // 其他以字母开头的视为 CSS 选择器（如 a[href...], div, li, span）
+  if (/^[a-zA-Z]/.test(rule)) return 'css'
   return 'jsoup'
 }
 

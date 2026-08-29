@@ -1,10 +1,10 @@
 # 汇流 OmniFlow · 项目状态文档
 
-> **文档版本**：v1.3
+> **文档版本**：v1.4
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
-> **当前阶段**：M1 引擎内核（M1a-M1e 完成，31 单测全通过；M1f 文档+push 进行中）
-> **Git Commit**：e5a33ae（feat(M1): 引擎内核实现）
+> **当前阶段**：M1 引擎内核（Legado 适配器完整重写，50 单测全通过）
+> **Git Commit**：（本次 Legado 适配器提交后填入）
 > **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
@@ -67,7 +67,7 @@
 ### 2.1 阶段状态总览
 ```
 M0 基建        ████████████░  95%  (Step 2-8 ✅ + 5.1.9/5.1.10/5.1.13/5.1.14 ✅；仅剩 5.1.8 原型迁移 P1 + 5.1.12 server P2 可延后)
-M1 引擎内核    ████████░░░░  70%  (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado ✅ + 31 单测 ✅；剩余 500 条回归测试 + CLI 演示)
+M1 引擎内核    ██████████░  85%  (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado完整 ✅ + 50 单测 ✅；剩余 500 条回归测试 + CLI 演示)
 M2 JS 沙箱     ░░░░░░░░░░░░   0%
 M3 书源消费    ░░░░░░░░░░░░   0%
 M4 影视消费    ░░░░░░░░░░░░   0%
