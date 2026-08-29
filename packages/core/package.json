@@ -21,9 +21,9 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target node20 --out-dir dist --external @omniflow/shared",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run --dir src",
-    "test:watch": "vitest --dir src",
-    "coverage": "vitest run --dir src --coverage",
+    "test": "vitest run --project core",
+    "test:watch": "vitest --project core",
+    "coverage": "vitest run --project core --coverage",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch --target node20 --out-dir dist --external @omniflow/shared",
     "clean": "rimraf dist coverage"
   },
@@ -34,6 +34,7 @@
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",
     "vitest": "^2.0.5",
+    "@vitest/coverage-v8": "^2.0.5",
     "@types/node": "^20.14.0",
     "rimraf": "^5.0.7"
   },
