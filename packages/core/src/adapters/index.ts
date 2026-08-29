@@ -1,3 +1,3 @@
-// packages/core/src/adapters · M1 起实现（当前占位）
-
-export {};
+/* @omniflow/core/adapters — 适配器入口 */
+export { LegadoAdapter } from './legado'
+export type { LegadoBookSource } from './legado'

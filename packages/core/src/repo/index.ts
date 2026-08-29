@@ -1,3 +1,2 @@
-// packages/core/src/repo · M1 起实现（当前占位）
-
-export {};
+/* @omniflow/core/repo — 仓库实现入口 */
+export { MemoryRepo } from './memory'

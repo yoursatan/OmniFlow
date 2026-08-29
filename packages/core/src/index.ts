@@ -1,10 +1,9 @@
 /* ==========================================================
  * @omniflow/core 顶层入口
- * M0：占位导出；M1 将在此导出 createEngine / OmniEngine 具体实现
+ * M1：选择器引擎 + 规则路由 + Pipeline + 内存 Repo + Legado 适配器
  * ========================================================== */
 
-// 目前先 re-export shared 的类型，确保消费端 import '@omniflow/core' 时
-// 可以直接用核心类型（避免双端重复依赖 @omniflow/shared）。
+// ——— IR 类型 re-export（消费端直接 import '@omniflow/core' 获取类型）———
 export {
   type OmniEngine,
   type OmniEngineOptions,
@@ -48,33 +47,43 @@ export {
   type AggregatedItem,
 } from '@omniflow/shared';
 
-// ——— M1 起的实现占位（按规划 §15 目录结构，先导出 undefined 占位）———
-// 适配器（11 类源，M1/M2 分阶段实现）
-export const adapters = {
-  legado: undefined as unknown,
-  tvbox: undefined as unknown,
-  hikerEso: undefined as unknown,
-  hikerDrpy: undefined as unknown,
-  cmsXml: undefined as unknown,
-  cmsJson: undefined as unknown,
-  iptvM3u: undefined as unknown,
-  iptvTxt: undefined as unknown,
-  rss: undefined as unknown,
-  opds: undefined as unknown,
-  custom: undefined as unknown,
-} as const;
+// ——— M1 实现 ———
+// 选择器引擎
+export { SelectorEngine, compileRule, executeRuleNode } from './selector'
+export type {
+  AnalyzeResult,
+  SelectorChain,
+  SelectorStep,
+  SelectorStepType,
+  SelectorContext,
+  CompiledRuleNode,
+  CompiledSegment,
+  SegmentMode,
+} from './selector'
+export { cssSelect, jsoupSelect, xpathSelect, jsonPathSelect, regexSelect } from './selector'
+export { parseJSoupRule } from './selector'
+export { regexReplace, extractTransforms, applyTransforms } from './selector'
+export { detectMode, stripModePrefix, extractAction } from './selector'
 
-// 规则引擎（核心 ★）
-export const engine = {
-  ruleRouter: undefined as unknown,  // §8.1 段-步 v2 编译执行器
-  pipeline: undefined as unknown,    // §8 Pipeline 5 级
-  selectors: undefined as unknown,   // §8 jsoup-sim / css / xpath / jsonPath / regex
-} as const;
+// 规则路由 + 管道执行
+export { RuleRouter } from './engine/rule-router'
+export { PipelineExecutor } from './engine/pipeline'
+export type { PipelineResult } from './engine/pipeline'
+export { createContext, interpolateTemplate } from './engine/context'
+export type { RuleContext, RuleEvent } from './engine/context'
 
+// 仓库
+export { MemoryRepo } from './repo/memory'
+
+// 适配器
+export { LegadoAdapter } from './adapters/legado'
+export type { LegadoBookSource } from './adapters/legado'
+
+// ——— M2+ 占位（保持向后兼容）———
 // JS 沙箱（M2 实现；QuickJS-WASM）
 export const jsRuntime = {
   quickjs: undefined as unknown,
-  hostApi: undefined as unknown,     // §9.2 hiker.* 兼容层
+  hostApi: undefined as unknown,
 } as const;
 
 // 聚合 + 相似归并（M3/M4 实现）
@@ -84,15 +93,8 @@ export const aggregate = {
   dedupe: undefined as unknown,
 } as const;
 
-// 协议（CMS / IPTV / RSS / OPDS 等的原生客户端）
+// 协议
 export const protocols = undefined as unknown;
 
-// HTTP 客户端（带缓存 + 代理 + UA 伪装）
+// HTTP 客户端（M1 使用 fetch，后续增强缓存 + 代理）
 export const http = undefined as unknown;
-
-// 仓库实现（内存 + Dexie + Better-SQLite 三种）
-export const repo = {
-  memory: undefined as unknown,       // 测试 / Web 无持久化场景
-  dexie: undefined as unknown,        // Web 端 IndexedDB
-  sqlite: undefined as unknown,       // 桌面端 Tauri + better-sqlite3
-} as const;

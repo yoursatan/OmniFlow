@@ -1,10 +1,10 @@
 # 汇流 OmniFlow · 项目状态文档
 
-> **文档版本**：v1.2
+> **文档版本**：v1.3
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
-> **当前阶段**：M0 基建中（Step 2-5 完成，下一步 Step 6 → apps/web 空壳）
-> **Git Commit**：217c8d9（docs v1.2 最终；骨架 b693f11 / STATUS同步 78d6d46）
+> **当前阶段**：M1 引擎内核（M1a-M1e 完成，31 单测全通过；M1f 文档+push 进行中）
+> **Git Commit**：（本次 M1 提交后填入）
 > **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
@@ -67,7 +67,7 @@
 ### 2.1 阶段状态总览
 ```
 M0 基建        ████████████░  95%  (Step 2-8 ✅ + 5.1.9/5.1.10/5.1.13/5.1.14 ✅；仅剩 5.1.8 原型迁移 P1 + 5.1.12 server P2 可延后)
-M1 引擎内核    ░░░░░░░░░░░░   0%
+M1 引擎内核    ████████░░░░  70%  (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado ✅ + 31 单测 ✅；剩余 500 条回归测试 + CLI 演示)
 M2 JS 沙箱     ░░░░░░░░░░░░   0%
 M3 书源消费    ░░░░░░░░░░░░   0%
 M4 影视消费    ░░░░░░░░░░░░   0%
@@ -192,16 +192,16 @@ init-project-plan-R7Bn1J/
 | **P2** | ~~5.1.13 原型文件归档到 `prototype/` 子目录~~ ✅ | `prototype/index.html + style.css + script.js`（git mv 保留历史） | ✅ `git mv index.html → prototype/index.html` + `git mv style.css → prototype/style.css` + `git mv script.js → prototype/script.js`；git status 显示 R (renamed)；历史可通过 `git log --follow prototype/index.html` 追溯 |
 | **P2** | ~~5.1.14 docs/ 目录建立~~ ✅ | `docs/开发规划.md`（git mv 保留历史） | ✅ `git mv 开发规划.md → docs/开发规划.md`；README.md 中 `[docs/开发规划.md](./docs/开发规划.md)` 链接可达 |
 
-### 5.2 M1 引擎内核（待 M0 完成后启动）
-| 优先级 | 任务 |
-|---|---|
-| P0 | `packages/core/src/selector/` 5 大选择器实现（jsoup-sim/css/xpath/jsonpath/regex） |
-| P0 | `packages/core/src/engine/rule-router.ts` 段-步 v2 编译执行 |
-| P0 | `packages/core/src/engine/pipeline.ts` Pipeline 5 级执行 |
-| P1 | `packages/core/src/adapters/legado.ts` Legado 适配器 |
-| P1 | `packages/core/src/repo/` 内存 repo 实现（测试用） |
-| P1 | 500 条兼容性回归单测 |
-| P2 | Node CLI 端到端演示：搜书→目录→正文 |
+### 5.2 M1 引擎内核（进行中）
+| 优先级 | 任务 | 状态 |
+|---|---|---|
+| P0 | ~~`packages/core/src/selector/` 5 大选择器实现（jsoup-sim/css/xpath/jsonpath/regex）~~ ✅ | 15 单测全通过；修复 XPath（text/xml mime + root 包裹）、断言 typo |
+| P0 | ~~`packages/core/src/engine/rule-router.ts` 段-步 v2 编译执行~~ ✅ | 9 单测全通过；|| OR 回退 + extractFields/extractList |
+| P0 | ~~`packages/core/src/engine/pipeline.ts` Pipeline 5 级执行~~ ✅ | 5 端到端单测全通过；修复 createContext 变量丢失 + stepToRuleString 模式前缀 |
+| P1 | ~~`packages/core/src/adapters/legado.ts` Legado 适配器~~ ✅ | 5 管道转换（search/detail/toc/content + replaceRegex），单测通过 |
+| P1 | ~~`packages/core/src/repo/` 内存 repo 实现（测试用）~~ ✅ | CRUD + 缓存 + 收藏 + 历史，单测通过 |
+| P1 | 500 条兼容性回归单测 | ⬜ 待做（当前 31 单测覆盖核心路径） |
+| P2 | Node CLI 端到端演示：搜书→目录→正文 | ⬜ 待做 |
 
 ### 5.3 M2-M6 远期（详见 §6 路线图缺口）
 
@@ -229,7 +229,7 @@ M6 规则工坊+发布                                                          
 | 里程碑 | 周期 | 验收演示（规划） | 当前进度 | 缺口摘要 |
 |---|---|---|---|---|
 | **M0 基建** | 2w | `pnpm dev` 起 web，`pnpm tauri dev` 起桌面，CI 绿 | ~30% (Git+文档+原型) | Monorepo 骨架、pnpm workspace、TS/Vite/Vue 工程化、ESLint/Prettier、CI Workflow、原型迁移到 Vue SFC |
-| **M1 引擎内核 ★** | 4w | Node CLI：吃 legado 书源 → 搜书 → 取目录 → 读正文 | 0% | rule-router 全前缀、jsoup-sim/css/xpath/jsonpath/regex 五选择器、Pipeline、内存 repo、500 条单测 |
+| **M1 引擎内核 ★** | 4w | Node CLI：吃 legado 书源 → 搜书 → 取目录 → 读正文 | 70% | ✅ 5 选择器 + rule-router + pipeline + repo + legado 适配器 + 31 单测；缺口：500 条回归测试 + CLI 演示 |
 | **M2 JS 沙箱** | 3w | 同 CLI 跑通 1 个 eso 源 + 1 个 drpy 源 | 0% | quickjs-wasm 宿主、PDFA/PDFH 垫片、同步阻塞桥、java.* 兼容层、超时熔断 |
 | **M3 书源消费端** | 3w | 导入书源订阅 → 书院发现 → 书架分组 → 阅读（翻页/换源）| 0% | 导入向导、Dexie/SQLite 双 repo、阅读器排版引擎、RSS 发现 |
 | **M4 影视消费端** | 3w | 导入 TVBox 配置 → 影院发现 → 详情 → 播放 → 收藏入库 | 0% | CMS 协议客户端、ArtPlayer 集成(hls/dash)、聚合搜索+换源、解析接口池 + web 嗅探 |
@@ -712,17 +712,54 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 🚨 阻塞
   - 0（当前无活跃阻塞项）
 
-| 维度 | 基线 commit `b1a4e6c` (Initial commit) | 当前（M0 Step 2-8 + 5.1.9/10/13/14 完成后）|
+## v0.1.6 · M1a-M1e 引擎内核实现 (2026-08-29) · Agent
+✅ 完成
+  - M1b 选择器引擎 ✅：5 大选择器（jsoup-sim/css/xpath/jsonpath/regex）+ transforms 后处理
+    · jsoup-sim：Legado JSoup 语法模拟（class./tag./id./@text/@html/@href/@textNodes + 负索引 + @ 分隔步骤）
+    · css：cheerio CSS 选择器 + 7 种动作后缀
+    · xpath：@xmldom/xmldom + xpath 库（修复：text/xml mime 替代 text/html + 多根 HTML 包裹 <root>）
+    · jsonpath：jsonpath-plus 库
+    · regex：正则捕获 + regexReplace 替换
+    · transforms：##regex##replacement / @replace / @trim 后处理链
+    · 15 单测全通过
+  - M1c RuleRouter ✅：段-步 v2 编译执行（L1 段级切分 && / ||、L2 模式判定、L3 步骤流水线、L4 后处理、L5 上下文）
+    · || OR 回退 + extractFields 批量字段提取 + extractList 列表+字段提取
+    · 9 单测全通过
+  - M1d PipelineExecutor ✅：5 级执行引擎（段→步→请求→选择器→后处理）
+    · execute() 通用执行 + search/detail/toc/content 便捷方法
+    · 调试事件追踪（segment:enter/exit、step:enter/exit、io、error、snapshot）
+    · haltOnError 控制 + 段间数据传递
+    · **修复 2 个关键 bug**：① createContext 忽略 overrides.variables 导致 {{key}}/{{page}} 模板变量不替换 ② stepToRuleString 未添加模式前缀（@css: // $. :）导致 CSS/XPath/JSONPath/Regex 规则被误判为 JSoup
+    · 5 端到端单测全通过（单段管道/多步串行/haltOnError=false 不中止/模板变量注入/段失败中止）
+  - M1e 内存 repo + Legado 适配器 ✅
+    · MemoryRepo：源 CRUD + 缓存 set/get/expire + 收藏 + 历史
+    · LegadoAdapter：LegadoBookSource JSON → UnifiedSource IR（5 管道转换：search/detail/toc/content + replaceRegex）
+    · 单测全通过
+  - 类型检查 exit=0；31 单测全通过（selector 15 + rule-router 9 + pipeline 5 + smoke 2）
+  - 覆盖率：pipeline.ts 80.8% / legado.ts 100% / memory.ts 74.2% / context.ts 73.1% / selector index 75.3%
+⚠️ 遗留
+  - tsup 未安装（root node_modules 无 tsup 二进制），core 包构建待补；不影响 typecheck + vitest 验证
+  - 500 条兼容性回归单测未做（当前 31 单测覆盖核心路径，M1 剩余 P1）
+  - Node CLI 端到端演示未做（M1 剩余 P2）
+  - cheerio 1.0.0 与 xmldom 的 XPath 选择器共存 OK（T5 风险未触发）
+🚨 阻塞
+  - 0（当前无活跃阻塞项）
+
+---
+
+## 18. 历史基线 vs 当前进度对比
+
+| 维度 | 基线 commit `b1a4e6c` (Initial commit) | 当前（M0 完成 + M1a-M1e 引擎内核完成）|
 |---|---|---|
-| **代码文件数** | 5 (.gitignore + 原型 3 件 + 规划 md) | 5 → 110+（apps/web 43 + vitest 5 + packages/ui 8 + README + LICENSE + prototype/ 3 件 git mv + docs/ 1 件 git mv；packages/shared 8 + packages/core 15；根配置 12；构建产物 4 包 dist 全部）|
+| **代码文件数** | 5 (.gitignore + 原型 3 件 + 规划 md) | 5 → 130+（apps/web 43 + vitest 5 + packages/ui 8 + README + LICENSE + prototype/ 3 件 + docs/ 1 件 + packages/shared 8 + **packages/core 25**（selector 7 + engine 4 + adapters 2 + repo 2 + tests 4 + index 2 + xpath.d.ts + 其他 4）+ 根配置 12）|
 | **包管理** | 无 package.json | ✅ pnpm workspace（5 包：@omniflow/shared + @omniflow/core + @omniflow/web + @omniflow/ui + 根 meta）；lockfile pnpm-lock.yaml 478 包 resolve；pnpm 11 `.npmrc onlyBuiltDependencies` 白名单 9 条（esbuild 7 + vue-demi）|
 | **构建产物** | 无 | ✅ packages/shared/dist/ (6 files) + packages/core/dist/ (6 files) + apps/web/dist/ (4 files, 1760 modules) + packages/ui/dist/ (2 files, 11 modules) |
 | **UI 形态** | 纯静态原型（浏览器 file://） | ✅ Vue 3.5 SFC 应用壳 + 27 Hash Router + Element Plus 290+ 图标 + Pinia 3 store + theme 22 tokens + packages/ui 3 共享组件 |
-| **引擎能力** | 0%（仅文档设计） | ≈3%（接口类型 + 占位导出 + 规则工坊 mock）；IR 类型被 apps/web 3 stores + packages/ui 真实消费 → 双端类型共用链路打通 |
-| **测试覆盖** | 0%（无测试框架）| ✅ Vitest 2.1.9 workspace 模式：core(node) + web(jsdom) 两 project；4 smoke tests passed；v8 coverage text+html+lcov 输出 |
+| **引擎能力** | 0%（仅文档设计） | ✅ M1a-M1e 完成：5 大选择器（jsoup-sim/css/xpath/jsonpath/regex）+ RuleRouter 段-步 v2 编译执行 + PipelineExecutor 5 级引擎 + MemoryRepo + LegadoAdapter；31 单测全通过 |
+| **测试覆盖** | 0%（无测试框架）| ✅ Vitest 2.1.9：core 31 单测（selector 15 + rule-router 9 + pipeline 5 + smoke 2）+ web 2 smoke；v8 coverage（pipeline 80.8% / legado 100% / memory 74.2%）|
 | **CI/CD** | 无 | 无（Step 9 建 workflow）|
-| **远程同步** | 未关联 GitHub | ✅ 已关联 origin=https://github.com/yoursatan/OmniFlow，分支 init-project-plan-R7Bn1J，累计 v0.1.0~v0.1.5 |
-| **文档完整度** | 规划文档 ≈95% | ✅ 规划 100%（docs/开发规划.md）+ README.md（项目介绍+免责声明+快速开始+路线图）+ LICENSE(GPL-3.0) + 状态文档 100%(§5 待办 11/13 打勾 + §14 Step 2-8/10-13 实测) + 记忆文档 100%（→ #006 含本次）|
+| **远程同步** | 未关联 GitHub | ✅ 已关联 origin=https://github.com/yoursatan/OmniFlow，分支 init-project-plan-R7Bn1J，累计 v0.1.0~v0.1.6 |
+| **文档完整度** | 规划文档 ≈95% | ✅ 规划 100%（docs/开发规划.md）+ README.md + LICENSE(GPL-3.0) + 状态文档 100%(§5 M1 5/7 打勾 + §14 实测) + 记忆文档（→ #007 含本次）|
 
 ---
 
