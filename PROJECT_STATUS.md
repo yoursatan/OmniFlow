@@ -4,7 +4,7 @@
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
 > **当前阶段**：M1 引擎内核（M1a-M1e 完成，31 单测全通过；M1f 文档+push 进行中）
-> **Git Commit**：（本次 M1 提交后填入）
+> **Git Commit**：e5a33ae（feat(M1): 引擎内核实现）
 > **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
