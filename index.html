@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>汇流 OmniFlow · UI 交互原型 v3.0</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="app">
+    <!-- ============ 侧边导航（176px 双列 · 信息架构 v2） ============ -->
+    <nav class="sidenav">
+      <div class="nav-logo" onclick="go('home')">
+        <div class="lg">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 14v-2.5a3 3 0 0 1 3-3h2.5V6L4 9.5V14Z" fill="#fff" />
+            <path d="M9.5 8.5H14l6.5 3.5L14 15.5H9.5V8.5Z" fill="rgba(255,255,255,.9)" />
+            <path d="M20.5 12 14 15.5v4l6.5-3.5V12Z" fill="#fff" />
+            <circle cx="7" cy="18.5" r="1.6" fill="#fff" />
+          </svg>
+        </div>
+        <div><b>汇流 OmniFlow</b><small>v0.1.0 · 全源聚合引擎</small></div>
+      </div>
+
+      <div class="nav-group-label">主导航</div>
+      <div class="nav-item on" data-s="home" onclick="go('home')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3L12 3z" />
+        </svg>首页
+      </div>
+      <div class="nav-item" data-s="search" onclick="go('search')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z" />
+        </svg>搜索
+      </div>
+      <div class="nav-item" data-s="bookshelf" onclick="go('bookshelf')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M5 3h13a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm1 2v14h11V5H6zm2 2h7v1.5H8V7zm0 3h7v1.5H8V10zm0 3h5v1.5H8v-1.5z" />
+        </svg>书架<span class="nav-badge">10</span>
+      </div>
+      <div class="nav-item" data-s="video" onclick="go('video')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6zm7 3.5v5l4.5-2.5L10 9.5z" />
+        </svg>影视<span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item" data-s="bookhall" onclick="go('bookhall')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 4h7v16H4V4zm9 0h7v16h-7V4z" />
+        </svg>书院
+      </div>
+      <div class="nav-item" data-s="cinema" onclick="go('cinema')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm3.5 3v2h9V8h-9zm0 4v2h6v-2h-6z" />
+        </svg>影院
+      </div>
+      <div class="nav-item" data-s="rss" onclick="go('rss')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3zm0 7a9 9 0 0 1 9 9h-3a6 6 0 0 0-6-6v-3zm1.5 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z" />
+        </svg>RSS
+      </div>
+      <div class="nav-item" data-s="live" onclick="go('live')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 7h18v10H3V7zm9 2.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6z" />
+        </svg>直播
+      </div>
+
+      <div class="nav-group-label">工具</div>
+      <div class="nav-item" data-s="sources" onclick="go('sources')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M7 2a2 2 0 0 0-2 2v3H3v2h2v6H3v2h2v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3h2v-2h-2v-6h2V7h-2V4a2 2 0 0 0-2-2H7zm1 3h8v2H8V5zm0 4h8v2H8V9zm0 4h8v2H8v-2z" />
+        </svg>源管理<span class="nav-badge">87</span>
+      </div>
+
+      <div class="nav-spacer"></div>
+      <div class="nav-item" data-s="settings" onclick="go('settings')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.6 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88L2.72 14.16a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.24l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.25.25.42.5.42h4c.25 0 .46-.17.5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.25.1.54 0 .68-.24l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
+        </svg>设置
+      </div>
+    </nav>
+
+    <div class="main">
+      <header class="topbar">
+        <h1 id="pageTitle">首页</h1>
+        <span class="crumb" id="pageCrumb">总览 · 继续观看/阅读 · 源健康度</span>
+        <div class="searchbox" id="topSearch" onclick="go('search')">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z" />
+          </svg>
+          跨源聚合搜索 · 影视 / 书籍 / 漫画
+          <kbd>Ctrl K</kbd>
+        </div>
+        <div class="top-actions">
+          <div class="iconbtn" title="下载管理" onclick="toast('下载管理：仅桌面端支持')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3v10.6l3.3-3.3 1.4 1.4-5.7 5.7-5.7-5.7 1.4-1.4 3.3 3.3V3h2zM4 19h16v2H4v-2z" />
+            </svg>
+          </div>
+          <div class="iconbtn" title="通知" onclick="toast('3 条通知：2 源失效 · 1 个订阅已更新')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2a6 6 0 0 0-6 6v3.6L4 15v2h16v-2l-2-3.4V8a6 6 0 0 0-6-6zm-2 17a2 2 0 0 0 4 0h-4z" />
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <div class="stage">
+
+        <!-- ============ 01 首页 ============ -->
+        <section class="screen on" id="sc-home">
+          <div class="hero">
+            <div class="in">
+              <h2>汇流 OmniFlow</h2>
+              <p>一套规则引擎 · 兼容 Legado 书源 / TVBox / 海阔视界 / ESO / DRPy / CMS / IPTV</p>
+              <div class="hstats">
+                <div class="hstat"><b>87</b><i>已启用源</i></div>
+                <div class="hstat"><b>11</b><i>格式适配器</i></div>
+                <div class="hstat"><b>96.4%</b><i>源健康度</i></div>
+                <div class="hstat"><b>v0.1.0</b><i>当前版本</i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-stats">
+            <div class="card mstat"><b style="color:var(--cy)">23</b><span>影视源</span><span class="trend"
+                style="color:var(--green)">↗ 本周新增 2</span></div>
+            <div class="card mstat"><b style="color:var(--acc)">41</b><span>书源 / 漫画源</span><span class="trend"
+                style="color:var(--muted)">体检 39 个正常</span></div>
+            <div class="card mstat"><b style="color:var(--gold)">9</b><span>直播源 · 2,468 频道</span><span class="trend"
+                style="color:var(--muted)">EPG 已关联 6 源</span></div>
+            <div class="card mstat"><b style="color:var(--orange)">14</b><span>解析接口</span><span class="trend"
+                style="color:var(--red)">2 个失效待处理</span></div>
+          </div>
+
+          <div class="sec-head">
+            <h2>▶ 继续观看</h2><span class="sub">换源不换进度</span><span class="more" onclick="go('video')">查看全部 ›</span>
+          </div>
+          <div class="card" style="margin-bottom:24px">
+            <div class="continue-card" onclick="go('player')">
+              <div class="thumb p5">
+                <div class="prog" style="width:62%"></div>
+              </div>
+              <div class="info"><b>漫长的季节</b><span>08:36 / 42:10 · 量子资源 · 2 小时前</span>
+                <div class="bar"><i style="width:62%"></i></div>
+              </div>
+            </div>
+            <div class="continue-card" onclick="go('player')">
+              <div class="thumb p3">
+                <div class="prog" style="width:28%"></div>
+              </div>
+              <div class="info"><b>流浪地球 2</b><span>34:12 / 2:53:00 · 量子资源 · 昨日</span>
+                <div class="bar"><i style="width:22%"></i></div>
+              </div>
+            </div>
+            <div class="continue-card" onclick="go('player')">
+              <div class="thumb p7">
+                <div class="prog" style="width:81%"></div>
+              </div>
+              <div class="info"><b>三体 · 动画版</b><span>29:01 / 36:44 · 非凡CMS · 3 天前</span>
+                <div class="bar"><i style="width:81%"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-head">
+            <h2>📚 继续阅读</h2><span class="sub">书架同步 · 含漫画</span><span class="more" onclick="go('bookshelf')">书架 ›</span>
+          </div>
+          <div class="grid cols6">
+            <div>
+              <div class="poster p1" onclick="go('reader')">
+                <div class="ph">
+                  <div class="t">诡秘之主</div>
+                  <div class="s">第 892 章</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="poster p4" onclick="go('reader')">
+                <div class="ph">
+                  <div class="t">大奉打更人</div>
+                  <div class="s">第 1,203 章</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="poster p6" onclick="go('reader')">
+                <div class="ph">
+                  <div class="t">深海余烬</div>
+                  <div class="s">第 47 章</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="poster p3" onclick="go('comic')">
+                <div class="ph">
+                  <div class="t">电锯人</div>
+                  <div class="s">漫画 · 第 148 话</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="poster p2" onclick="go('reader')">
+                <div class="ph">
+                  <div class="t">灵境行者</div>
+                  <div class="s">第 217 章</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="poster p5" onclick="go('reader')">
+                <div class="ph">
+                  <div class="t">隐秘死角</div>
+                  <div class="s">第 55 章</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 02 搜索 ============ -->
+        <section class="screen" id="sc-search">
+          <div class="disc-layout">
+            <div class="disc-main card">
+              <div class="search-header">
+                <div class="searchbar">
+                  <input id="srInput" value="三体" placeholder="输入片名 / 书名，Enter 发起跨源聚合搜索">
+                  <button class="btn primary" id="srRun" onclick="runSearch()">⌕ 聚合搜索</button>
+                </div>
+                <div class="catbar" style="margin-top:2px">
+                  <span class="cat-label">源分类</span>
+                  <div class="cat-chip on" data-cat="all" onclick="pickCat(this,'all')">全部 <span class="n">87</span>
+                  </div>
+                  <div class="cat-chip" data-cat="video" onclick="pickCat(this,'video')">影视源 <span class="n">23</span>
+                  </div>
+                  <div class="cat-chip" data-cat="book" onclick="pickCat(this,'book')">书源 <span class="n">41</span>
+                  </div>
+                  <div class="cat-chip" data-cat="comic" onclick="pickCat(this,'comic')">漫画源 <span class="n">8</span>
+                  </div>
+                  <div class="cat-chip" data-cat="rss" onclick="pickCat(this,'rss')">RSS <span class="n">9</span></div>
+                  <div class="cat-chip" data-cat="live" onclick="pickCat(this,'live')">直播源 <span class="n">6</span>
+                  </div>
+                </div>
+                <div class="sr-meta" id="srMeta"><span class="pulse"></span>聚合 <b style="color:var(--cy)">87</b> 个源 · 归并
+                  <b style="color:var(--cy)">4</b> 组结果 · 1.8s（渐进渲染）
+                </div>
+              </div>
+              <div class="disc-sep"></div>
+              <div class="disc-content " id="srList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 03 书架 ============ -->
+        <section class="screen" id="sc-bookshelf">
+          <div class="bs-layout">
+            <div class="bs-side card">
+              <div class="bs-head">书库分组</div>
+              <div class="bs-sep"></div>
+              <div class="bs-body" id="bsGroups"></div>
+              <div class="bs-sep"></div>
+              <div class="bs-foot">
+                <button class="btn sm ghost" style="width:100%" onclick="toast('管理分组：重命名/删除/排序')">管理分组</button>
+              </div>
+            </div>
+            <div class="bs-main card">
+              <div class="bs-header">
+                <div class="bs-toolbar" id="bsToolbar"></div>
+                <div class="bs-sep"></div>
+              </div>
+              <div class="book-grid" id="bookGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 04 影视 ============ -->
+        <section class="screen" id="sc-video">
+          <div class="bs-layout">
+            <div class="bs-side card">
+              <div class="bs-head">影视分组</div>
+              <div class="bs-sep"></div>
+              <div class="bs-body" id="vdGroups"></div>
+              <div class="bs-sep"></div>
+              <div class="bs-foot">
+                <button class="btn sm ghost" style="width:100%" onclick="toast('管理分组：重命名/删除/排序')">管理分组</button>
+              </div>
+            </div>
+            <div class="bs-main card">
+              <div class="bs-header">
+                <div class="bs-toolbar" id="vdToolbar"></div>
+                <div class="bs-sep"></div>
+              </div>
+              <div class="book-grid" id="vdGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 05 书院（发现页） ============ -->
+        <section class="screen" id="sc-bookhall">
+          <div class="disc-layout">
+            <div class="disc-side card">
+              <div class="disc-head">
+                <div class="dh-title">书院<span>书源·发现</span></div>
+              </div>
+              <input class="disc-search" id="bhSearch" placeholder="筛选书源…"
+                oninput="filterDiscover('bookhall',this.value)">
+              <div class="disc-sep"></div>
+              <div class="disc-src-list" id="bhSrcList"></div>
+            </div>
+            <div class="disc-main card">
+              <div class="disc-header">
+                <h2 id="bhSrcName">笔趣阁·示例源</h2>
+                <div class="cat-line" id="bhCatLine"></div>
+              </div>
+              <div class="disc-sep"></div>
+              <div class="disc-content" id="bhContent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 06 影院（发现页） ============ -->
+        <section class="screen" id="sc-cinema">
+          <div class="disc-layout">
+            <div class="disc-side card">
+              <div class="disc-head">
+                <div class="dh-title">影院<span>影视源·发现</span></div>
+              </div>
+              <input class="disc-search" id="cnSearch" placeholder="筛选影视源…"
+                oninput="filterDiscover('cinema',this.value)">
+              <div class="disc-sep"></div>
+              <div class="disc-src-list" id="cnSrcList"></div>
+            </div>
+            <div class="disc-main card">
+              <div class="disc-header">
+                <h2 id="cnSrcName">量子资源</h2>
+                <div class="cat-line" id="cnCatLine"></div>
+              </div>
+              <div class="disc-sep"></div>
+              <div class="disc-content" id="cnContent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 07 RSS（发现页） ============ -->
+        <section class="screen" id="sc-rss">
+          <div class="disc-layout">
+            <div class="disc-side card">
+              <div class="disc-head">
+                <div class="dh-title">RSS<span>订阅源·发现</span></div>
+              </div>
+              <input class="disc-search" id="rsSearch" placeholder="筛选订阅源…" oninput="filterDiscover('rss',this.value)">
+              <div class="disc-sep"></div>
+              <div class="disc-src-list" id="rsSrcList"></div>
+            </div>
+            <div class="disc-main card">
+              <div class="disc-header">
+                <h2 id="rsSrcName">少数派 · 效率</h2>
+                <div class="cat-line" id="rsCatLine"></div>
+              </div>
+              <div class="disc-sep"></div>
+              <div class="disc-content" id="rsContent"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 08 直播 ============ -->
+        <section class="screen" id="sc-live">
+          <div class="live-layout">
+            <div class="live-side card">
+              <div style="padding:10px">
+                <input class="disc-search" id="liveSearch" placeholder="搜索频道…" oninput="filterChan(this.value)">
+              </div>
+              <div id="liveSide"></div>
+            </div>
+            <div class="live-main">
+              <div class="player-shell">
+                <div class="video-ph"></div>
+                <div class="play-core">
+                  <div class="big" onclick="toast('直播流：hls/flv 自适应 · 缓冲中')"><svg viewBox="0 0 24 24"
+                      fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg></div>
+                  <span id="liveNowName">CCTV-1 综合 · 直播中</span>
+                </div>
+                <div class="ctrl-bar">
+                  <div class="ctrl-ic" onclick="toast('直播不支持暂停')"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg></div>
+                  <span class="time">LIVE · 高清</span>
+                  <div class="track" style="opacity:.3"><i style="width:100%"></i></div>
+                  <div class="ctrl-ic" title="音量"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8.03v7.94A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z" />
+                    </svg></div>
+                  <div class="ctrl-ic" title="全屏"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                    </svg></div>
+                </div>
+              </div>
+              <div class="card epg-card">
+                <div class="epg-now">
+                  <span class="name">📺 <span id="epgChan">CCTV-1 综合</span></span>
+                  <span class="time" id="epgTime">正在播出 · 19:30 - 20:00</span>
+                  <span class="tag gold" style="margin-left:auto">HD</span>
+                </div>
+                <div style="font-size:18px;font-weight:800;margin-bottom:4px" id="epgTitle">新闻联播</div>
+                <div style="font-size:12px;color:var(--muted);margin-bottom:16px" id="epgDesc">中央电视台综合频道每晚 19 点播出的新闻节目
+                </div>
+                <div class="epg-timeline" id="epgTl"></div>
+                <div class="epg-timebar">
+                  <span>18:00</span><span>19:00</span><span>20:00</span><span>21:00</span><span>22:00</span><span>23:00</span>
+                </div>
+                <div class="epg-upnext" id="epgNext"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 09 规则工坊（子视图：新建/编辑源时加载） ============ -->
+        <section class="screen" id="sc-studio">
+          <div class="studio">
+            <div class="st-left">
+              <div class="src-picker">
+                <div class="n"><span class="tag acc" id="stSrcType">legado</span><b id="stSrcName">笔趣阁·示例源</b></div>
+                <div class="u" id="stSrcUrl">https://www.xbiquge.la</div>
+              </div>
+              <input class="disc-search" id="stSrcFilter" placeholder="筛选已保存的源…" oninput="filterStSrc(this.value)">
+              <div class="st-src-list" id="stSrcList"></div>
+              <div class="field-group">◈ 搜索 ruleSearch</div>
+              <div class="field-item on" onclick="pickField(this,'ruleSearch.bookList')"><span class="k">列表
+                  <i>bookList</i></span><span class="itype">jsoup</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleSearch.name')"><span class="k">书名
+                  <i>name</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleSearch.author')"><span class="k">作者
+                  <i>author</i></span><span class="itype">jsoup</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleSearch.bookUrl')"><span class="k">详情URL
+                  <i>bookUrl</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleSearch.coverUrl')"><span class="k">封面
+                  <i>coverUrl</i></span><span class="itype">regex</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleSearch.intro')"><span class="k">简介
+                  <i>intro</i></span><span class="itype">css</span></div>
+              <div class="field-group">◈ 详情 ruleBookInfo</div>
+              <div class="field-item" onclick="pickField(this,'ruleBookInfo.name')"><span class="k">书名
+                  <i>name</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleBookInfo.author')"><span class="k">作者
+                  <i>author</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleBookInfo.lastChapter')"><span class="k">最新章节
+                  <i>lastChapter</i></span><span class="itype">xpath</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleBookInfo.intro')"><span class="k">简介
+                  <i>intro</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleBookInfo.tocUrl')"><span class="k">目录URL
+                  <i>tocUrl</i></span><span class="itype">jsoup</span></div>
+              <div class="field-group">◈ 目录 ruleToc</div>
+              <div class="field-item" onclick="pickField(this,'ruleToc.chapterList')"><span class="k">章节列表
+                  <i>chapterList</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleToc.chapterName')"><span class="k">章节名
+                  <i>chapterName</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleToc.chapterUrl')"><span class="k">章节URL
+                  <i>chapterUrl</i></span><span class="itype">css</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleToc.nextTocUrl')"><span class="k">下一目录
+                  <i>nextTocUrl</i></span><span class="itype">js</span></div>
+              <div class="field-group">◈ 正文 ruleContent</div>
+              <div class="field-item" onclick="pickField(this,'ruleContent.content')"><span class="k">正文内容
+                  <i>content</i></span><span class="itype">js</span></div>
+              <div class="field-item" onclick="pickField(this,'ruleContent.nextContentUrl')"><span class="k">下一章
+                  <i>nextContentUrl</i></span><span class="itype">js</span></div>
+            </div>
+
+            <div class="st-mid">
+              <div class="editor-head">
+                <span class="tag cy" style="font-family:var(--mono)" id="stField">ruleSearch.bookList</span>
+                <div class="se-tabs" id="seMode">
+                  <div class="se-tab on" data-mode="code" onclick="pickEditorMode(this,'code')">源码</div>
+                  <div class="se-tab" data-mode="vis" onclick="pickEditorMode(this,'vis')">可视化</div>
+                </div>
+              </div>
+              <div class="snippet-row">
+                <span class="sl">语法</span>
+                <div class="snippet-tag" data-se="jsoup" onclick="pickSe(this,'jsoup')">JSoup</div>
+                <div class="snippet-tag on" data-se="css" onclick="pickSe(this,'css')">@css:</div>
+                <div class="snippet-tag" data-se="xpath" onclick="pickSe(this,'xpath')">// XPath</div>
+                <div class="snippet-tag" data-se="jsonpath" onclick="pickSe(this,'jsonpath')">$. JsonPath</div>
+                <div class="snippet-tag" data-se="regex" onclick="pickSe(this,'regex')">: 正则</div>
+                <div class="snippet-tag" data-se="js" onclick="pickSe(this,'js')">@js:</div>
+                <div class="snippet-tag" data-se="tpl" onclick="pickSe(this,'tpl')">{{ }} 模板</div>
+                <div class="snippet-tag" data-se="mix" onclick="pickSe(this,'mix')">✦ 混合</div>
+              </div>
+              <div class="code-area on" id="codeArea"></div>
+              <div class="vis-view" id="visView"></div>
+              <div class="st-toolbar">
+                <button class="btn sm primary" id="dbgRun">▶ 调试运行</button>
+                <button class="btn sm" onclick="saveRule()">💾 保存</button>
+                <button class="btn sm" onclick="exportRule()">↧ 导出</button>
+                <button class="btn sm" onclick="toast('格式化：规则 DSL formatter')">⌥ 格式化</button>
+                <button class="btn sm" onclick="toast('回滚：规则版本历史 (本地 diff)')">↺ 回滚</button>
+                <button class="btn sm" onclick="toast('语法手册：docs/rule-syntax.md · 8 种前缀 + 段-步流水线')">? 语法帮助</button>
+                <span style="margin-left:auto;font-size:11px;color:var(--faint);font-family:var(--mono)">Monaco ·
+                  omniflow-rule DSL</span>
+              </div>
+            </div>
+
+            <div class="st-right">
+              <div class="dbg-head">
+                <div class="t">调试器 · 分步执行 <span class="tag green" id="dbgState">就绪</span></div>
+                <div class="st"><span>管道: search</span><span>引擎: <b id="dbgEngine">CSS</b></span><span>源: <b
+                      id="dbgSrcName">笔趣阁</b></span><span>耗时: <b id="dbgTime">0ms</b></span></div>
+              </div>
+              <div class="dbg-steps" id="dbgSteps"></div>
+              <div class="st-toolbar">
+                <button class="btn sm" id="dbgStep">下一步 ▸</button>
+                <button class="btn sm" onclick="toast('断点：编辑器行号处点击设置')">◎ 断点</button>
+                <button class="btn sm ghost" id="dbgReset">⟲ 重置</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 10 源管理 ============ -->
+        <section class="screen" id="sc-sources">
+          <div class="disc-layout">
+            <div class="disc-main card">
+              <div class="src-header">
+                <div class="src-toolbar">
+                  <button class="btn primary" onclick="openImport()">＋ 导入源</button>
+                  <button class="btn" onclick="openStudio()">＋ 新建源</button>
+                  <button class="btn" onclick="toast('源体检：search→detail→toc→content 四步打点，87 源排队中')">⌕ 源体检（批量）</button>
+                  <button class="btn" onclick="toast('导出：全部源 + 分组 → omniflow-sources-20260828.json')">↧ 备份/导出</button>
+                  <button class="btn" onclick="toast('WebDAV 同步：书源/书架/进度')">↑ WebDAV 同步</button>
+                  <div class="src-count"><span>共 <b style="color:var(--text)">87</b> 源</span><span class="tag green">健康
+                      84</span><span class="tag orange">缓慢 2</span><span class="tag red">失效 1</span></div>
+                </div>
+
+                <div class="catbar" style="margin-top:2px">
+                  <span class="cat-label">源分类</span>
+                  <div class="cat-chip on" data-srcf="all" onclick="pickSrcCat(this,'all')">全部 <span class="n">87</span>
+                  </div>
+                  <div class="cat-chip" data-srcf="book" onclick="pickSrcCat(this,'book')">书源 <span class="n">41</span>
+                  </div>
+                  <div class="cat-chip" data-srcf="comic" onclick="pickSrcCat(this,'comic')">漫画 <span class="n">8</span>
+                  </div>
+                  <div class="cat-chip" data-srcf="video" onclick="pickSrcCat(this,'video')">影视 <span
+                      class="n">23</span>
+                  </div>
+                  <div class="cat-chip" data-srcf="rss" onclick="pickSrcCat(this,'rss')">RSS <span class="n">9</span>
+                  </div>
+                  <div class="cat-chip" data-srcf="live" onclick="pickSrcCat(this,'live')">直播 <span class="n">6</span>
+                  </div>
+                  <div class="cat-chip" data-srcf="parse" onclick="pickSrcCat(this,'parse')">解析 <span
+                      class="n">14</span>
+                  </div>
+                  <div style="margin-left:auto"><button class="btn sm ghost" onclick="toast('源分组：按用途分组管理 · 拖拽归组')">⊞
+                      分组</button></div>
+                </div>
+              </div>
+              <div class="disc-sep"></div>
+              <div class="disc-content" id="srcList"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 11 设置 ============ -->
+        <section class="screen" id="sc-settings">
+          <div class="settings-layout">
+            <div class="settings-nav">
+              <div class="settings-nav-item on" data-sec="appearance" onclick="pickSetSec(this,'appearance')">🎨 外观主题
+              </div>
+              <div class="settings-nav-item" data-sec="network" onclick="pickSetSec(this,'network')">🌐 网络设置</div>
+              <div class="settings-nav-item" data-sec="sandbox" onclick="pickSetSec(this,'sandbox')">🔒 安全沙箱</div>
+              <div class="settings-nav-item" data-sec="backup" onclick="pickSetSec(this,'backup')">💾 数据备份</div>
+              <div class="settings-nav-item" data-sec="media" onclick="pickSetSec(this,'media')">▶ 播放与阅读</div>
+              <div class="settings-nav-item" data-sec="about" onclick="pickSetSec(this,'about')">ℹ 关于</div>
+            </div>
+            <div class="settings-content">
+
+              <div class="settings-section on" id="sec-appearance">
+                <h3>🎨 外观主题</h3>
+                <div class="sh-sub">界面基调、排版密度与阅读器默认纸张</div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>深色模式</b><span>跟随系统 / 手动切换</span></div>
+                  <div class="seg"><span class="on">深色</span><span>浅色</span><span>跟随</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>界面密度</b><span>卡片间距与网格列数</span></div>
+                  <div class="seg"><span>紧凑</span><span class="on">默认</span><span>宽松</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>阅读器默认纸张</b><span>新开书籍时套用的主题</span></div>
+                  <div class="seg"><span class="on">深色</span><span>纸黄</span><span>浅色</span><span>护眼</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>强调色</b><span>靛紫 / 青 双主色配比</span></div>
+                  <div class="seg"><span class="on">靛紫主</span><span>青主</span><span>均衡</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>减弱动效</b><span>关闭翻页/淡入动画，降低眩晕</span></div>
+                  <div class="switch" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
+              <div class="settings-section" id="sec-network">
+                <h3>🌐 网络设置</h3>
+                <div class="sh-sub">请求代理、UA 伪装、并发与超时 —— 决定源的命中率</div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>HTTP 代理</b><span>Clash HTTP 7890 · 全局 / 规则分流</span></div>
+                  <div class="setting-input"><select>
+                      <option>不使用代理</option>
+                      <option selected>系统代理</option>
+                      <option>自定义代理</option>
+                    </select></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>自定义 User-Agent</b><span>模拟浏览器 UA，避免被反爬识别</span></div>
+                  <div class="setting-input"><input type="text" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64)"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>全局请求头</b><span>所有请求附加的自定义 Header</span></div>
+                  <div class="setting-input"><button class="btn sm" onclick="toast('请求头编辑器：3 条全局规则')">配置</button></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>请求超时</b><span>网络请求最长等待时间</span></div>
+                  <div class="setting-input"><select>
+                      <option>10 秒</option>
+                      <option selected>15 秒</option>
+                      <option>30 秒</option>
+                      <option>60 秒</option>
+                    </select></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>并发抓取上限</b><span>聚合搜索扇出并发数</span></div>
+                  <div class="seg"><span>4</span><span class="on">8</span><span>16</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>字符集自动纠正</b><span>GBK/Big5 源自动转 UTF-8</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>Web 端 CORS 代理</b><span>Web 端跨域请求中转服务（需自建 server）</span></div>
+                  <div class="switch" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
+              <div class="settings-section" id="sec-sandbox">
+                <h3>🔒 安全沙箱</h3>
+                <div class="sh-sub">QuickJS-WASM 隔离执行用户脚本，双端同构</div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>JS 脚本沙箱</b><span>启用后，所有用户 JS 在隔离沙箱中执行</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>脚本执行超时</b><span>单条 JS 脚本最长 CPU 时间，防死循环</span></div>
+                  <div class="setting-input"><select>
+                      <option>3 秒</option>
+                      <option selected>5 秒</option>
+                      <option>10 秒</option>
+                      <option>30 秒</option>
+                    </select></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>沙箱内存限制</b><span>单个 JS 实例可使用的最大内存</span></div>
+                  <div class="setting-input"><select>
+                      <option>32 MB</option>
+                      <option selected>64 MB</option>
+                      <option>128 MB</option>
+                      <option>256 MB</option>
+                    </select></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>禁止危险 API</b><span>阻止脚本访问 process / window / 本地文件</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>网络请求白名单</b><span>脚本内 fetch 仅允许访问源自身域名</span></div>
+                  <div class="switch" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>同步阻塞桥</b><span>hiker / drpy 同步 req() 支持（Atomics.wait 桥）</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
+              <div class="settings-section" id="sec-backup">
+                <h3>💾 数据备份</h3>
+                <div class="sh-sub">SQLite（桌面）/ Dexie（Web）双驱动，上层无感</div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>导出全部数据</b><span>源配置、书架、历史、阅读进度、规则</span></div>
+                  <div class="setting-input"><button class="btn sm"
+                      onclick="toast('导出完成：omniflow-backup-20260828.ofbk')">📤 导出</button></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>导入数据</b><span>从备份文件恢复所有数据</span></div>
+                  <div class="setting-input"><button class="btn sm" onclick="toast('选择 .ofbk 备份文件')">📥 导入</button>
+                  </div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>WebDAV 同步</b><span>书源 / 书架 / 阅读进度 / 规则 · 增量同步</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+                  <div class="setting-info"><b>本地数据库</b><span>SQLite + Dexie 索引 · 源/书架/历史/进度</span></div>
+                  <div class="setting-input col" style="width:100%">
+                    <div style="font-size:11.5px;color:var(--muted);width:100%;text-align:left">已用 186 MB / 512 MB</div>
+                    <div class="storage-bar"><i style="width:36%"></i></div>
+                  </div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>缓存策略</b><span>封面 / 章节正文 / 播放直链</span></div>
+                  <div class="seg"><span>不缓存</span><span class="on">智能</span><span>全缓存</span></div>
+                </div>
+              </div>
+
+              <div class="settings-section" id="sec-media">
+                <h3>▶ 播放与阅读</h3>
+                <div class="sh-sub">ArtPlayer 与阅读排版内核的默认行为</div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>默认播放器内核</b><span>ArtPlayer + hls.js / dash.js / flv.js</span></div>
+                  <div class="setting-input"><select>
+                      <option selected>ArtPlayer（推荐）</option>
+                      <option>系统原生</option>
+                      <option>外部播放器</option>
+                    </select></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>自动连播</b><span>片尾 5 秒倒计时自动进入下一集</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>播放前嗅探</b><span>网页嗅探真实 m3u8 / mp4 直链</span></div>
+                  <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>默认解析接口</b><span>仓库不内置任何解析地址，需自行配置</span></div>
+                  <div class="setting-input"><select>
+                      <option selected>JSON 池-A</option>
+                      <option>嗅探模式</option>
+                      <option>极速解析</option>
+                    </select></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>阅读正文字号</b><span>阅读器默认字号 / 行距</span></div>
+                  <div class="seg"><span>小</span><span class="on">中</span><span>大</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>翻页动画</b><span>仿真翻页 / 滚动 / 无动画</span></div>
+                  <div class="seg"><span class="on">仿真翻页</span><span>滚动</span><span>无</span></div>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-info"><b>TTS 朗读</b><span>Web Speech API / 桌面系统 TTS</span></div>
+                  <div class="switch" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
+              <div class="settings-section" id="sec-about">
+                <div class="about-box">
+                  <div class="about-logo">汇</div>
+                  <b style="font-size:16px">汇流 OmniFlow</b>
+                  <div style="color:var(--muted);font-size:12px;margin-top:8px;line-height:1.7">Web + PC 双端开源 ·
+                    GPL-3.0<br>兼容 Legado / TVBox / 海阔 / eso / drpy / CMS / IPTV</div>
+                  <div style="display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+                    <span class="tag acc">Vue 3 + TS + Vite</span>
+                    <span class="tag cy">Tauri v2</span>
+                    <span class="tag green">QuickJS-WASM</span>
+                    <span class="tag gold">Monaco</span>
+                  </div>
+                  <div style="color:var(--faint);font-size:11px;margin-top:16px">v0.1.0-beta · 引擎修订 b8e2a91 · © 2026
+                  </div>
+                  <div
+                    style="color:var(--faint);font-size:11px;margin-top:8px;line-height:1.7;max-width:420px;margin-left:auto;margin-right:auto">
+                    空壳发行，不内置任何源。用户自行导入的第三方资源源由用户自行负责，本项目仅提供解析规则引擎。</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 12 影片详情（子视图） ============ -->
+        <section class="screen" id="sc-detail">
+          <div class="detail-hero">
+            <div class="poster p5">
+              <div class="ph">
+                <div class="t">三体</div>
+                <div class="s">2023 · 电视剧</div>
+              </div>
+              <div style="position:absolute;top:8px;right:8px"><span class="tag gold"
+                  style="background:rgba(245,197,24,.25);font-weight:700">9.4</span></div>
+            </div>
+            <div class="info" style="flex:1;min-width:0">
+              <h2>三体 <span class="tag green">4 源可用</span></h2>
+              <div class="meta-line"><span><b>30</b> 集全</span><span>科幻 /
+                  奇幻</span><span>2023</span><span>中国大陆</span><span>张鲁一 / 于和伟 / 陈瑾</span></div>
+              <div class="desc-block">
+                纳米材料学家汪淼被警察史强带到联合作战中心，参与侦破一起科学家连环自杀案件。倒计时的尽头是什么？幽灵倒计时、科学边界、三日凌空……一个宏大的宇宙图景在人类面前徐徐展开。</div>
+              <div class="parse-row">
+                <span class="tag acc">解析接口</span>
+                <span class="tag" style="cursor:pointer" onclick="toast('已切换：JSON 池-A（默认）')">JSON 池-A（默认）</span>
+                <span class="tag" style="cursor:pointer" onclick="toast('已切换：嗅探模式')">嗅探模式</span>
+                <span class="tag" style="cursor:pointer" onclick="toast('已切换：极速解析')">极速解析</span>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+                <button class="btn primary" onclick="go('player')">▶ 立即播放</button>
+                <button class="btn" onclick="toast('已收藏到「追剧」分组')">+ 收藏</button>
+                <button class="btn" onclick="toast('换源抽屉：4 源可用 · 换源保留播放进度')">⇄ 换源 4</button>
+                <button class="btn" onclick="toast('下载：仅桌面端支持')">⤓ 下载</button>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:16px">
+            <div class="ep-tabs">
+              <span class="tag cy">播放线路</span>
+              <span class="tag" style="cursor:pointer" data-dsrc="0" id="ds0" onclick="pickDSrc(0)">量子资源</span>
+              <span class="tag" style="cursor:pointer" data-dsrc="1" id="ds1" onclick="pickDSrc(1)">非凡CMS</span>
+              <span class="tag" style="cursor:pointer" data-dsrc="2" id="ds2" onclick="pickDSrc(2)">蓝光影院</span>
+              <span class="tag" style="cursor:pointer" data-dsrc="3" id="ds3" onclick="pickDSrc(3)">快手影视</span>
+              <span style="margin-left:auto;color:var(--cy);font-size:12px;cursor:pointer" onclick="toggleOrder()"
+                id="orderBtn">⇅ 正序</span>
+            </div>
+            <div class="ep-grid" id="epGrid"></div>
+          </div>
+        </section>
+
+        <!-- ============ 13 播放器（子视图） ============ -->
+        <section class="screen" id="sc-player">
+          <div class="player-layout">
+            <div class="player-main">
+              <div class="player-shell">
+                <div class="video-ph"></div>
+                <div class="play-core">
+                  <div class="big" onclick="toast('ArtPlayer 起播：hls.js 加载 index.m3u8')"><svg viewBox="0 0 24 24"
+                      fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg></div>
+                  <span id="playerSub">点击播放 · 三体 第01集 科学边界</span>
+                </div>
+                <div class="ctrl-bar">
+                  <div class="ctrl-ic" title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg></div>
+                  <span class="time">08:36 / 42:10</span>
+                  <div class="track"><i></i></div>
+                  <div class="ctrl-ic" title="音量"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8.03v7.94A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z" />
+                    </svg></div>
+                  <div class="ctrl-ic" title="倍速" onclick="toast('倍速：0.5x / 1.0x / 1.5x / 2.0x')"><span
+                      style="font-size:11px;font-family:var(--mono)">1.0x</span></div>
+                  <div class="ctrl-ic" title="设置"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.6 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88L2.72 14.16a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.24l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.25.25.42.5.42h4c.25 0 .46-.17.5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.25.1.54 0 .68-.24l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
+                    </svg></div>
+                  <div class="ctrl-ic" title="画中画"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z" />
+                    </svg></div>
+                  <div class="ctrl-ic" title="全屏"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                    </svg></div>
+                </div>
+              </div>
+              <div
+                style="display:flex;align-items:center;justify-content:space-between;margin:14px 4px 0;gap:12px;flex-wrap:wrap">
+                <div>
+                  <h2 style="font-size:16px" id="plTitle">三体 · 第01集 · 科学边界</h2>
+                  <div style="color:var(--muted);font-size:12px;margin-top:4px">量子资源 · 1080P · H.265 · hls.js</div>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn sm" onclick="prevEp()">‹ 上一集</button>
+                  <button class="btn sm" onclick="nextEp()">下一集 ›</button>
+                  <button class="btn sm" onclick="toast('投屏 DLNA：列入远期规划')">⇱ 投屏</button>
+                </div>
+              </div>
+            </div>
+            <div class="player-side">
+              <div class="next-ep" onclick="nextEp()">➤ 下一集：<span id="nxEp">第02集 倒计时</span><br><span
+                  style="color:var(--muted);font-size:11px">自动连播已开启</span></div>
+              <div class="card" style="padding:12px">
+                <div style="font-size:13px;font-weight:700;margin-bottom:8px">选集列表 <span class="tag"
+                    style="margin-left:6px">量子资源</span></div>
+                <div class="ep-list-side" id="sideEps"></div>
+              </div>
+              <div class="sniff-log">
+                <div style="color:var(--cy);margin-bottom:6px">🔍 嗅探日志</div>
+                <div><span class="ok">[OK]</span> 请求主页面 200 OK</div>
+                <div><span class="ok">[OK]</span> 匹配到 m3u8 地址</div>
+                <div><span class="hit">[HIT]</span> 解析成功：https://.../index.m3u8</div>
+                <div><span class="ok">[OK]</span> hls.js 加载完成 · 起播</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 14 阅读器（子视图） ============ -->
+        <section class="screen" id="sc-reader">
+          <div class="reader-wrap">
+            <div class="reader-topbar">
+              <button class="btn sm ghost" onclick="toggleToc()">☰ 目录</button>
+              <div class="rt-mid">诡秘之主 · <span id="rdBookTitle">第八百九十一章 · 灰雾之上</span></div>
+              <button class="btn sm ghost" onclick="toast('书签：已加入第 891 章')">🔖 书签</button>
+            </div>
+            <div class="reader-page dark" id="readerPage" onclick="flipPage(1)">
+              <div class="toc-drawer" id="tocDrawer" onclick="event.stopPropagation()">
+                <div class="th">📑 目录 · 共 1,432 章 <span class="x" onclick="toggleToc()">✕</span></div>
+                <div class="tl" id="tocList"></div>
+              </div>
+              <div class="reader-title" id="rdTitle"></div>
+              <div class="reader-body" id="rdBody"></div>
+              <div class="reader-foot"><span id="rdPos"></span><span>书源：笔趣阁 · legado 规则</span><span>08-28 20:12</span>
+              </div>
+            </div>
+            <div class="reader-ctl">
+              <button class="btn sm" onclick="flipPage(-1)">‹ 上一页</button>
+              <button class="btn sm" onclick="flipPage(1)">下一页 ›</button>
+              <div class="sep"></div>
+              <button class="btn sm ghost" onclick="rdFont(-1)">A⁻</button>
+              <button class="btn sm ghost" onclick="rdFont(1)">A⁺</button>
+              <div class="sep"></div>
+              <span style="font-size:12px;color:var(--muted)">行距</span>
+              <button class="btn sm ghost" onclick="rdLine(-0.15)">－</button>
+              <button class="btn sm ghost" onclick="rdLine(0.15)">＋</button>
+              <div class="sep"></div>
+              <button class="btn sm ghost" onclick="toast('换源：书名+作者指纹匹配 6 个书源')">⇄ 换源</button>
+              <button class="btn sm ghost" onclick="toast('朗读：Web Speech API / 桌面 TTS')">🔈 朗读</button>
+              <div class="theme-dots">
+                <div class="theme-dot dark on" onclick="rdTheme('dark')" title="深色"></div>
+                <div class="theme-dot paper" onclick="rdTheme('paper')" title="纸黄"></div>
+                <div class="theme-dot light" onclick="rdTheme('light')" title="浅色"></div>
+                <div class="theme-dot green" onclick="rdTheme('green')" title="护眼绿"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ 15 漫画阅读器（子视图） ============ -->
+        <section class="screen" id="sc-comic">
+          <div class="comic-wrap">
+            <div class="comic-topbar">
+              <button class="btn sm ghost" onclick="toast('章节列表：第 1 - 148 话')">☰ 章节</button>
+              <div class="ct-mid">电锯人 · <span id="cmTitle">第 148 话 · 暗之恶魔</span></div>
+              <span class="tag cy" id="cmModeTag">双页模式</span>
+            </div>
+            <div class="comic-page dual" id="comicPage">
+              <div class="comic-panel left">
+                <div style="text-align:center;color:var(--muted)">
+                  <div style="font-size:48px;margin-bottom:10px">📖</div>
+                  <div id="cmLeft">第 148 话 · 左页</div>
+                  <div style="font-size:11px;margin-top:6px">点击或按 → 翻页</div>
+                </div>
+              </div>
+              <div class="comic-panel right">
+                <div style="text-align:center;color:var(--muted)">
+                  <div style="font-size:48px;margin-bottom:10px">📖</div>
+                  <div id="cmRight">第 148 话 · 右页</div>
+                  <div style="font-size:11px;margin-top:6px" id="cmPageNo">第 1 / 32 页</div>
+                </div>
+              </div>
+            </div>
+            <div class="comic-ctl">
+              <button class="btn sm" onclick="flipChapter(-1)">‹ 上一话</button>
+              <button class="btn sm" onclick="flipChapter(1)">下一话 ›</button>
+              <div class="sep"></div>
+              <div class="comic-mode">
+                <button class="on" data-cm="dual" onclick="pickComicMode(this,'dual')">双页</button>
+                <button data-cm="single" onclick="pickComicMode(this,'single')">单页</button>
+                <button data-cm="scroll" onclick="pickComicMode(this,'scroll')">条漫</button>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+                <span style="font-size:12px;color:var(--muted);font-family:var(--mono)" id="cmCounter">1/32</span>
+                <input type="range" min="1" max="32" value="1" style="width:130px" oninput="gotoComicPage(this.value)">
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 导入源向导 ============ -->
+  <div class="modal-mask" id="impModal">
+    <div class="modal">
+      <h3>导入源</h3>
+      <div class="ms">自动识别格式：legado 书源 / TVBox 配置 / ZyPlayer 一键格式 / 海阔·eso JS / drpy / m3u 直播</div>
+      <div class="imp-tabs">
+        <div class="imp-tab on" onclick="switchImpTab(this,'url')">🌐 URL 订阅<div class="d">远程拉取·增量更新</div>
+        </div>
+        <div class="imp-tab" onclick="switchImpTab(this,'file')">📁 本地文件<div class="d">json / js / m3u</div>
+        </div>
+        <div class="imp-tab" onclick="switchImpTab(this,'text')">📋 粘贴内容<div class="d">剪贴板导入</div>
+        </div>
+      </div>
+      <div class="imp-pane on" id="imp-url">
+        <input class="imp-input single" id="impUrl" value="https://example.com/booksource.json"
+          placeholder="https://example.com/booksource.json">
+      </div>
+      <div class="imp-pane" id="imp-file">
+        <div class="imp-zone" onclick="toast('文件选择器：.json / .js / .m3u / .txt')">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3 6 9h4v7h4V9h4l-6-6zM4 18h16v2H4v-2z" />
+          </svg>
+          <div>拖入文件，或点击选择</div>
+          <div style="font-size:11px;color:var(--faint);margin-top:6px">支持 .json / .m3u / .txt 格式</div>
+        </div>
+      </div>
+      <div class="imp-pane" id="imp-text">
+        <textarea class="imp-input" id="impText" placeholder='粘贴 JSON 规则、M3U 列表或一键格式文本…'></textarea>
+      </div>
+      <div class="imp-tags">
+        <span class="tag">📚 Legado 书源</span><span class="tag">🎬 TVBox 配置</span><span class="tag">🎥 ZyPlayer 格式</span>
+        <span class="tag">🌊 海阔视界</span><span class="tag">📺 IPTV M3U</span><span class="tag">⚙ drpy / eso</span>
+      </div>
+      <div style="margin-top:12px;font-size:11.5px;color:var(--muted)">识别策略：JSON 字段特征探测 → bookSourceUrl=legado /
+        sites=TVBox / sites.data=ZyPlayer / var rule=drpy → 自动匹配适配器并预检规则完整性</div>
+      <div class="modal-acts">
+        <button class="btn ghost" onclick="closeImport()">取消</button>
+        <button class="btn primary" onclick="doImport()">导入并预检</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
