@@ -4,7 +4,7 @@
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
 > **当前阶段**：M1 引擎内核（Legado 适配器完整重写，50 单测全通过）
-> **Git Commit**：（本次 Legado 适配器提交后填入）
+> **Git Commit**：8619e99（feat(M1): Legado 适配器完整重写）
 > **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
