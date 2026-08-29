@@ -684,7 +684,7 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 | **引擎能力** | 0%（仅文档设计） | ≈3%（接口类型 + 占位导出 + 规则工坊编辑状态机 mock）；IR 类型真实被 apps/web 消费（3 stores 直接 import UnifiedSource / RulePipeline / SourceKind / SourceFormat / SourceHealth / DebugSession 联合）→ 双端类型共用链路已跑通 |
 | **测试覆盖** | 0%（无测试框架）| ≈0%（vitest 已在 core package.json devDependencies，未写用例；apps/web 未配置 vitest.config，下一 Agent Step 8 处理）|
 | **CI/CD** | 无 | 无（Step 9 建 workflow）|
-| **远程同步** | 未关联 GitHub | ✅ 已关联 origin=https://github.com/yoursatan/OmniFlow，分支 init-project-plan-R7Bn1J 上一次 push=v0.1.2；本次 v0.1.3 本地变更待提交 |
+| **远程同步** | 未关联 GitHub | ✅ 已关联 origin=https://github.com/yoursatan/OmniFlow，分支 init-project-plan-R7Bn1J 本次 push 至 69c7f02 (Step 6-7 apps/web + 文档)，累计 v0.1.0~v0.1.3 |
 | **文档完整度** | 规划文档 ≈95% | 规划 100% + 状态文档 100%(含 Step2-7 实证数据 + 待办 5.1.5/5.1.7 打勾 + §14 Step6/7/10/11 实测) + 记忆文档 100%（→ #004 含本次）|
 
 ---
