@@ -1,0 +1,92 @@
+/* =========================================================
+   OmniFlow · 设计 Token（与原型 style.css 保持一致的暗色主题）
+   ========================================================= */
+:root {
+  color-scheme: dark;
+  --bg-0: #0b0d12;
+  --bg-1: #11141b;
+  --bg-2: #171b25;
+  --bg-3: #1e2330;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text-0: #e8ecf1;
+  --text-1: #b7bfcc;
+  --muted: #6d7688;
+  --brand: #4f8cff;
+  --brand-soft: rgba(79, 140, 255, 0.14);
+  --accent: #a070ff;
+  --success: #32c787;
+  --warning: #f1b14a;
+  --danger: #ef5d60;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --nav-w: 240px;
+  --header-h: 52px;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--brand); text-decoration: none; }
+
+/* ---- Element Plus 部分调色贴近 OmniFlow Token ---- */
+.el-button--primary {
+  --el-button-bg-color: var(--brand);
+  --el-button-border-color: var(--brand);
+  --el-button-hover-bg-color: #6ea0ff;
+  --el-button-hover-border-color: #6ea0ff;
+}
+
+.el-menu {
+  --el-menu-bg-color: transparent;
+  --el-menu-hover-bg-color: var(--bg-3);
+  --el-menu-text-color: var(--text-1);
+  --el-menu-active-color: #ffffff;
+}
+
+/* 简易卡片类（占位视图用） */
+.omni-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+.omni-card h1,
+.omni-card h2,
+.omni-card h3 { margin-top: 0; }
+.omni-muted { color: var(--muted); }
+.omni-kgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+.omni-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: var(--bg-3);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  margin-right: 6px;
+}
