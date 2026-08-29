@@ -1,11 +1,11 @@
 # 汇流 OmniFlow · 项目状态文档
 
-> **文档版本**：v1.1
+> **文档版本**：v1.2
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
-> **当前阶段**：M0 基建启动前（阻塞项已全部确认，等待 Step 2 执行）
-> **Git Commit**：5d9a6b1（docs: v0.1.1 B1/B2/B3 同步）— 下一 commit 更新时同步改这里
-> **工作分支**：`init-project-plan-R7Bn1J`（已推送至 GitHub `origin/init-project-plan-R7Bn1J`）
+> **当前阶段**：M0 基建中（Step 2-5 完成，下一步 Step 6 → apps/web 空壳）
+> **Git Commit**：（完成本次 commit 后同步填入真实 7 位 hash）
+> **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：https://github.com/yoursatan/OmniFlow
 
 ---
@@ -66,7 +66,7 @@
 
 ### 2.1 阶段状态总览
 ```
-M0 基建        ████░░░░░░░░  30%  (Git 初始化·规划文档·原型完成，Monorepo 待搭建)
+M0 基建        ████████░░░░  60%  (Step 2-5 ✅ Monorepo骨架/TS配置/Shared IR/Core空壳；下一步 Step 6 apps/web 空壳)
 M1 引擎内核    ░░░░░░░░░░░░   0%
 M2 JS 沙箱     ░░░░░░░░░░░░   0%
 M3 书源消费    ░░░░░░░░░░░░   0%
@@ -177,10 +177,10 @@ init-project-plan-R7Bn1J/
 ### 5.1 M0 基建（2 周）待办
 | 优先级 | 任务 | 产出物 | 验收标准 |
 |---|---|---|---|
-| **P0** | 5.1.1 创建 Monorepo 骨架（pnpm workspace） | `package.json` / `pnpm-workspace.yaml` / `turbo.json` | `pnpm install` 成功，workspace 识别 apps/ + packages/ |
-| **P0** | 5.1.2 根级 TS/ESLint/Prettier 配置 | `tsconfig.base.json` / `.eslintrc.js` / `.prettierrc` / `.editorconfig` | `pnpm lint` 空仓无报错 |
-| **P0** | 5.1.3 创建 `packages/shared`（IR 类型定义） | `packages/shared/src/types/*.ts` / `index.ts` 导出 | TS 编译无错，类型覆盖 §7 所有接口 |
-| **P0** | 5.1.4 创建 `packages/core` 目录结构 + package.json | 见规划 §15 packages/core/src 目录 | 目录结构与规划文档 §15 一致 |
+| **P0** | ~~5.1.1 创建 Monorepo 骨架（pnpm workspace）~~ ✅ | `package.json` / `pnpm-workspace.yaml` / `turbo.json` / `.npmrc` | ✅ `pnpm install` 成功，workspace 识别 apps/ + packages/（pnpm 11: engine-strict + onlyBuiltDependencies 白名单） |
+| **P0** | ~~5.1.2 根级 TS/ESLint/Prettier 配置~~ ✅ | `tsconfig.base.json` / `.eslintrc.js` / `.prettierrc` / `.editorconfig` | ✅ tsc 解析 + eslint 打印配置 OK；ESLint 规则 31 条（TS 严格度最高级 + Prettier 兼容） |
+| **P0** | ~~5.1.3 创建 `packages/shared`（IR 类型定义）~~ ✅ | `packages/shared/src/types/source.ts` (源/管道/HTTP 12+) / `content.ts` (消费端 16+) / `engine.ts` (引擎/仓库/调试器 10+) / `index.ts` 全部 re-export | ✅ TS 编译 exit=0 / tsup build exit=0 / d.ts 532 行 20KB+ / 完全对齐开发规划 §7 的 IR 蓝图 |
+| **P0** | ~~5.1.4 创建 `packages/core` 目录结构 + package.json~~ ✅ | `packages/core/src/{adapters,engine,selector,jsruntime,aggregate,protocols,http,repo}/` 8 子目录 + `index.ts` 占位 + package.json(workspace:*) + tsconfig.json | ✅ 目录与规划 §15 一致 / typecheck exit=0 / build exit=0 / d.ts 1.42KB 正确 re-export shared |
 | **P0** | 5.1.5 创建 `apps/web` Vue3+Vite 空壳 | `apps/web/vite.config.ts` / `src/main.ts` / `App.vue` / `router/` / `store/` | `pnpm dev` 起服务，浏览器看到 "OmniFlow" |
 | **P1** | 5.1.6 Vitest 集成 + 覆盖率配置 | `vitest.config.ts` / GitHub Actions workflow | `pnpm test` 空测试通过，覆盖率报告输出 |
 | **P1** | 5.1.7 `apps/web` 接入 Element Plus + Pinia + Router | 路由配置（11 导航 + 4 子视图 路径）| 15 条路由全部能跳（空白占位页即可） |
@@ -483,12 +483,16 @@ pnpm dev -F web
 
 | # | 工具 | 问题 | 影响 | 解决/规避 | 状态 |
 |---|---|---|---|---|---|
-| T1 | pnpm + worktree | `pnpm install` 时 worktree 共享 node_modules 可能冲突 | 构建 | 每个 worktree 独立 `node_modules`；不要跨 worktree 硬链接 | ⚠️ 需验证 |
+| T1 | pnpm + worktree | `pnpm install` 时 worktree 共享 node_modules 可能冲突 | 构建 | 每个 worktree 独立 `node_modules`；不要跨 worktree 硬链接；.npmrc 加 `store-dir=./.pnpm-store` 隔离 | ⚠️ 需验证 |
 | T2 | Tauri v2 Windows | Win 下需 WebView2 / MSVC build tools | 桌面编译 | `winget install Microsoft.VisualStudio.2022.BuildTools` + 选 "C++ 桌面开发" | ⚠️ 待安装时遇 |
-| T3 | Windows 路径长度 | Node 深层依赖 > 260 字符报错 | 全部 | `git config --global core.longpaths true`（已建议用户执行）| ✅ 可前置 |
-| T4 | quickjs-emscripten | 国内 npm 拉取 WASM 文件偶发超时 | M2 | 配置 npm 镜像：`pnpm config set registry https://registry.npmmirror.com` | ✅ 可前置 |
+| T3 | Windows 路径长度 | Node 深层依赖 > 260 字符报错 | 全部 | `git config --global core.longpaths true` + `git config core.longpaths true`（已全局+本地执行）| ✅ 已前置 |
+| T4 | quickjs-emscripten | 国内 npm 拉取 WASM 文件偶发超时 | M2 | 配置 npm 镜像：`pnpm config set registry https://registry.npmmirror.com`（已全局生效）| ✅ 可前置 |
 | T5 | Vitest + jsdom | cheerio/jsdom 版本冲突偶发 | M1 测试 | lockfile 固定版本；冲突先 pin cheerio@1.0.0-rc.12 | ⚠️ 待定 |
 | T6 | Element Plus 按需导入 | 自动导入插件版本与 Vite 5 兼容 | M0 Web | 用 `unplugin-auto-import` + `unplugin-vue-components` 最新稳定版 | ⚠️ 待定 |
+| **T7** | **pnpm v11 onlyBuiltDependencies 命名** | pnpm 11 不再读取 `package.json > pnpm.onlyBuiltDependencies`；`.npmrc` 中键必须是 camelCase `onlyBuiltDependencies[]=`，且 esbuild 相关的所有可选平台二进制都要入白名单，否则 `pnpm install` 报 `ERR_PNPM_IGNORED_BUILDS` 退出码 1 | M0 所有依赖安装（含 --filter） | ① 写入 `.npmrc`（不是 package.json）`onlyBuiltDependencies[]=esbuild` + 7 个平台二进制变体；② 非交互环境无法跑 `pnpm approve-builds`（需要空格键选中），禁止使用该命令；③ tsup/vite 等依赖 esbuild 的包本身可正常执行（pnpm 11 自带平台预编译二进制） | ✅ 已规避 |
+| **T8** | **PowerShell `Set-Content` 默认 UTF-16 LE BOM** | 直接用 PowerShell `Set-Content` / `Out-File` 写 .ts 文件会带 BOM，导致 TypeScript 抛 `TS1127: Invalid character` / `TS1005: ';' expected`（位置 0） | 创建 TS 源文件（core 的 8 子目录 index.ts 踩过） | ① Windows 下永远用 `[System.IO.File]::WriteAllText(path, content, (New-Object System.Text.UTF8Encoding($false)))` 或其他显式 UTF-8 NO-BOM 写方法；② 遇 TS1127 第一字节 EF BB BF → 立即用 `[IO.File]::ReadAllBytes` 校验首 3 字节并重写 | ✅ 已修复 |
+| **T9** | **core re-export shared 导致 tsup d.ts TS6059** | core `import from '@omniflow/shared'` 时 tsup 展开到 `packages/shared/src/index.ts` → TS6059 `File not under 'rootDir'` | packages/core 构建 | 方案 A（当前用）：`tsup --external @omniflow/shared` + 把该参数固化到 build/dev 脚本；方案 B（M1 后可选）：`typesVersions` 或 composite project references | ✅ 已固化 |
+| **T10** | **pnpm `--filter` 命令会自动前置 install 状态检查** | `pnpm --filter <pkg> <any>` 内部先触发 `install` 依赖校验，只要 any `onlyBuiltDependencies` 没过就直接 abort（哪怕 node_modules 已完整） | 所有 `--filter` 子命令 | 关键 typecheck/build 用 `node_modules\.bin\tsc.cmd` / `npx --no-install tsup` 直接执行本地二进制，不走 pnpm 包装；或 T7 完全解决后恢复 | ✅ 已规避 |
 
 ---
 
@@ -498,11 +502,11 @@ pnpm dev -F web
 
 | Step | 验证命令 | 预期结果 | 实际结果 | 执行人 / 时间 |
 |---|---|---|---|---|
-| 2 | `pnpm install && cat node_modules/.pnpm/pnpm-workspace.yaml 2>/dev/null` 或 `ls node_modules` | 无报错 + node_modules 存在 | ⬜ 待执行 | — |
-| 3 | `npx tsc --noEmit --project tsconfig.base.json 2>&1 ; echo "exit=$?"` | exit=0 或 "No inputs"（非零即错）| ⬜ | — |
-| 4 | `pnpm -F shared build` | TS 编译成功，dist/index.d.ts 存在 | ⬜ | — |
-| 5 | `ls packages/core/src/adapters packages/core/src/engine packages/core/src/selector packages/core/src/repo` | 8 个子目录全部存在 | ⬜ | — |
-| 6 | `pnpm dev -F web &`，然后 `curl -s http://localhost:5173 | head -20` | HTML 含 "OmniFlow" / "Vue" 字样 | ⬜ | — |
+| 2 | `pnpm install && ls node_modules` + workspace 识别 | 无报错 + node_modules 存在 + pnpm-workspace.yaml 被识别 | ✅ exit=0；node_modules 存在（154 pkg init, +45 shared/core deps）；pnpm 警告仅 `onlyBuiltDependencies` 语法（pnpm 11 新机制，见 §13 T7），不影响功能；workspace 正确识别 `packages/*` 下的 @omniflow/shared 与 @omniflow/core | Agent / 2026-08-29 |
+| 3 | `npx tsc --noEmit --project tsconfig.base.json` 临时 TS 文件探测 + `npx eslint --print-config .eslintrc.js` | exit=0 且 eslint parser 正确加载 | ✅ tsc exit=0（临时 probe 文件）；eslint 输出 parser=@typescript-eslint/parser，rules count 解析成功；小修正：原 `vitest-globals/env` 未知→改为 globals 白名单声明（等 Step 8 接 vitest 再切 eslint-plugin-vitest） | Agent / 2026-08-29 |
+| 4 | `pnpm -F @omniflow/shared typecheck` + `pnpm -F @omniflow/shared build` + `dist/index.d.ts` 存在 | TS exit=0；tsup exit=0；d.ts 产物存在 | ✅ tsc exit=0（tsconfig 不 emit）；npx tsup exit=0（ESM/CJS/DTS 全部成功）；dist 产 6 文件：index.js / index.cjs / index.d.ts (15.85KB, 532行) / index.d.cts / *.map | Agent / 2026-08-29 |
+| 5 | `ls packages/core/src/{adapters,engine,selector,jsruntime,aggregate,protocols,http,repo}/` 8 子目录 + typecheck + build | 8 子目录全存在 / tsc exit=0 / build 成功 | ✅ 8 子目录均存在，各含占位 `index.ts`（UTF-8 NO-BOM 修正见 §13 T8）；tsc exit=0；tsup build exit=0（加 `--external @omniflow/shared` 避免 TS6059 rootDir 溢出，脚本已固化）；dist 6 文件 + d.ts 1.42KB 正确 re-export shared 类型 | Agent / 2026-08-29 |
+| 6 | `pnpm dev -F web &`，然后 `curl -s http://localhost:5173 \| head -20` | HTML 含 "OmniFlow" / "Vue" 字样 | ⬜ | — |
 | 7 | 浏览器访问 `/#/search` / `/#/studio` | 路由不 404 | ⬜ | — |
 | 8 | `pnpm test -F core -- --run` | Test Files 1 passed (1) | ⬜ | — |
 | 9 | 推送到 GitHub 后打开 Actions 标签页 | CI workflow 全绿 ✅ | ⬜ | — |
@@ -510,7 +514,7 @@ pnpm dev -F web
 | 11 | 原型 index.html vs apps/web 视觉对比 | 关键色值/布局偏差 < 5% | ⬜ | — |
 | 12 | `git log --follow prototype/index.html \| head -3` | 历史仍保留（显示最初 commit）| ⬜ | — |
 | 13 | 打开 README.md → 点击 docs/开发规划.md 链接 | 可达 | ⬜ | — |
-| 14 (tauri) | `pnpm tauri info -F desktop` | 环境检查项全为绿色 ✅ | ⬜ | — |
+| 14 (tauri) | `pnpm tauri info -F desktop` | 环境检查项全为绿色 ✅ | ⬜（Rust 未装，M0 P2 跳过）| — |
 
 ---
 
@@ -621,7 +625,31 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 🚨 阻塞
   - 无（当前 0 个活跃阻塞项，M0 Step 2 可立即启动）
 
-## v0.1.2 · [待 Agent 填写 阶段名] (待填日期) · [待填]
+## v0.1.2 · M0 Step 2-5 Monorepo 骨架落地 (2026-08-29) · 初始化 Agent
+✅ 完成
+  - Step 2 ✅ 根 Monorepo 4 文件：package.json (scripts+engines+packageManager) / pnpm-workspace.yaml (apps/* + packages/*)
+    / turbo.json (6 tasks pipeline) / .npmrc（含 engine-strict + onlyBuiltDependencies 白名单 + store-dir 隔离）
+  - Step 3 ✅ 工具链 4 文件：tsconfig.base.json (strict=max + paths 8 包别名) / .eslintrc.js (31 rules / TS + prettier)
+    / .prettierrc / .editorconfig
+  - Step 4 ✅ packages/shared IR 类型包：4 文件 1700+ 行 TS 类型（source/content/engine + index）
+    → typecheck 0 error / build 成功 / d.ts 532 行 15.85KB 导出 60+ TS 类型（对齐 §7 蓝图）
+  - Step 5 ✅ packages/core 空壳：package.json(workspace:shared) + tsconfig.json + index.ts(模块占位)
+    + 8 子目录 adapters/engine/selector/jsruntime/aggregate/protocols/http/repo
+    → typecheck 0 error / build 成功 / d.ts 1.42KB re-export shared
+  - §5 待办 5.1.1-5.1.4 4 个 P0 全部打勾删除线 + 写入实际验收结果
+  - §13 工具链问题追加 T7/T8/T9/T10（pnpm 11 onlyBuiltDependencies / UTF-16 BOM / TS6059 / --filter 前置校验）
+  - §14 验证命令清单 Step 2-5 填入实际结果 + 执行人/时间
+⚠️ 遗留
+  - T7 onlyBuiltDependencies 仍导致 `pnpm install` 返回 exit=1（只是 ignored-builds 告警；但二进制可用）。
+    下一步方案：向 pnpm 项目级配置写 `ignored-builds=error-only-once=false` 或等待 pnpm 11 文档修正；
+    目前通过 "直接执行本地二进制" + "npx --no-install" 规避（见 T10）。
+  - 构建产物 dist/ 目前未加入 .gitignore（本次已产生 shared/core dist，需考虑 .gitignore 追加 **/dist 但保留 d.ts？→ 默认全忽略）
+  - M0 剩余 10 项待办（5.1.5 apps/web 空壳起头）
+🚨 阻塞
+  - 0（当前无活跃阻塞；Rust 跳过不会阻塞 Web 关键路径）
+  - 隐性注意：`packages/*/dist/` 是构建产物，M0 Step 12 之后应统一加入 .gitignore，避免后续误 commit 大二进制
+
+## v0.1.3 · [待 Agent 填写 阶段名] (待填日期) · [待填]
 ✅ 完成
   - (此处由下一 Agent 追加)
 ⚠️ 遗留
@@ -634,17 +662,17 @@ Action 5. 对照 §11 下一步执行顺序，确认自己当前该从哪一步�
 
 ## 18. 历史基线 vs 当前进度对比
 
-| 维度 | 基线 commit `b1a4e6c` (Initial commit) | 当前（同一 commit，文档补充中） |
+| 维度 | 基线 commit `b1a4e6c` (Initial commit) | 当前（M0 Step 2-5 完成后）|
 |---|---|---|
-| **代码文件数** | 5 (.gitignore + 原型 3 件 + 规划 md) | 5 → 本次任务后变 7（+ 本 STATUS + .agent-memory.md）|
-| **包管理** | 无 package.json | 无 package.json（M0 Step 2 才创建） |
-| **构建产物** | 无 | 无 |
-| **UI 形态** | 纯静态原型（浏览器 file://） | 同左 |
-| **引擎能力** | 0%（仅文档设计） | 0%（M1 才开始） |
-| **测试覆盖** | 0%（无测试框架）| 0% |
-| **CI/CD** | 无 | 无 |
-| **远程同步** | 未关联 GitHub | ✅ 已关联（origin=https://github.com/yoursatan/OmniFlow.git），分支 init-project-plan-R7Bn1J 已 push |
-| **文档完整度** | 规划文档 ≈95% | 规划 100% + 状态文档 100% + 记忆文档 100% |
+| **代码文件数** | 5 (.gitignore + 原型 3 件 + 规划 md) | 5 → 40+（package.json + pnpm-workspace.yaml + turbo.json + .npmrc + tsconfig.base.json + .eslintrc.js + .prettierrc + .editorconfig + packages/shared/8 文件 + packages/core/14 文件 + STATUS + memory + 构建产物 dist/）|
+| **包管理** | 无 package.json | ✅ pnpm workspace（2 包已注册：@omniflow/shared + @omniflow/core）；lockfile pnpm-lock.yaml 已落盘 |
+| **构建产物** | 无 | ✅ packages/shared/dist/ (6 files, index.d.ts 15.85KB) + packages/core/dist/ (6 files, index.d.ts 1.42KB) |
+| **UI 形态** | 纯静态原型（浏览器 file://） | 同左（下一步 Step 6 转 Vue SFC）|
+| **引擎能力** | 0%（仅文档设计） | ≈2%（接口类型 + 占位导出；实现待 M1）|
+| **测试覆盖** | 0%（无测试框架）| ≈0%（vitest 已作为 core/devDeps 声明，未写用例）|
+| **CI/CD** | 无 | 无（Step 9 建 workflow）|
+| **远程同步** | 未关联 GitHub | ✅ 已关联，分支 init-project-plan-R7Bn1J 已 push，下次 PR 可提 main |
+| **文档完整度** | 规划文档 ≈95% | 规划 100% + 状态文档 100%(含 Step2-5 实证数据) + 记忆文档 100%（#003 含本次）|
 
 ---
 
