@@ -67,8 +67,8 @@
 ### 2.1 阶段状态总览
 ```
 M0 基建        ████████████░  95%  (Step 2-8 ✅ + 5.1.9/5.1.10/5.1.13/5.1.14 ✅；仅剩 5.1.8 原型迁移 P1 + 5.1.12 server P2 可延后)
-M1 引擎内核    ██████████░  85%  (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado完整 ✅ + 50 单测 ✅；剩余 500 条回归测试 + CLI 演示)
-M2 JS 沙箱     ░░░░░░░░░░░░   0%
+M1 引擎内核    ███████████░  90%  (选择器5 ✅ + rule-router ✅ + pipeline ✅ + repo+legado字段对齐 ✅ + 73 单测含真实书源 ✅；剩余 500 条回归测试 + CLI 演示)
+M2 JS 沙箱     █░░░░░░░░░░░  10%  (jsruntime 接口契约 + 求值器 evalHeader/evalExploreUrl/evalSearchUrl ✅；缺口 quickjs-wasm 宿主 + 同步桥)
 M3 书源消费    ░░░░░░░░░░░░   0%
 M4 影视消费    ░░░░░░░░░░░░   0%
 M5 直播+IPTV   ░░░░░░░░░░░░   0%
@@ -200,10 +200,39 @@ init-project-plan-R7Bn1J/
 | P0 | ~~`packages/core/src/engine/pipeline.ts` Pipeline 5 级执行~~ ✅ | 5 端到端单测全通过；修复 createContext 变量丢失 + stepToRuleString 模式前缀 |
 | P1 | ~~`packages/core/src/adapters/legado.ts` Legado 适配器~~ ✅ | 5 管道转换（search/detail/toc/content + replaceRegex），单测通过 |
 | P1 | ~~`packages/core/src/repo/` 内存 repo 实现（测试用）~~ ✅ | CRUD + 缓存 + 收藏 + 历史，单测通过 |
-| P1 | 500 条兼容性回归单测 | ⬜ 待做（当前 31 单测覆盖核心路径） |
+| P1 | 500 条兼容性回归单测 | ⬜ 待做（当前 73 单测：selector 15 + rule-router 9 + pipeline 5 + legado 19 + real-sources 15 + real-rss 8 + smoke 2） |
 | P2 | Node CLI 端到端演示：搜书→目录→正文 | ⬜ 待做 |
 
 ### 5.3 M2-M6 远期（详见 §6 路线图缺口）
+
+### 5.3.1 M2 JS 沙箱实现方案（针对 @js: header / 动态 exploreUrl 卡点）
+
+**卡点背景**（真实 fixtures 量化证据）：
+- Legado 书源 `real-sources.json`（29 个）：header 字段 2/29 是 `@js:` 动态脚本（非 JSON，卡点 #22）；exploreUrl 大量 `@js:`/`<js>` 动态生成（卡点 #25）
+- 订阅源 `real-rss-sources.json`（15 个）：`enableJs` 全 true；sortUrl 3/15 含 `@js:`；rule* 含 JS 占比 67%（10/15）
+- M1 全部跳过 → 这些源功能残缺，M2 沙箱为刚需
+
+**方案落点**：`packages/core/src/jsruntime/index.ts`（已写入接口契约 + 求值器）
+
+**实现路线（分阶段）**：
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| M1（当前） | jsruntime 仅导出类型 + 求值器函数签名；LegadoAdapter 不持有 jsRuntime，遇 `@js:` 返回 undefined/[] 跳过 | ✅ 完成 |
+| M2a | 在 `packages/engine-js` 实现 `QuickJSRuntime`（quickjs-emscripten WASM），双端同构（Web Worker / Tauri 侧车）；导出 `createJsRuntime()` 工厂 | ⬜ |
+| M2b | 补同步阻塞桥（`Atomics.wait` + Worker）+ `java.*` 兼容层 + PDFA/PDFH 型片 + 超时熔断 | ⬜ |
+
+**接口契约**（已定义于 jsruntime/index.ts）：
+- `JSRuntime`：`eval`（异步）/`evalSync`（同步，Legado 规则期望同步返回）/`preloadLib`（jsLib/injectJs 预加载）/`dispose`
+- `JSRuntimeAPI`：注入沙箱的 API（http/dom/crypto/source/java/cookieJar/localStorage/log/pdfh/pdfa/pdfs）
+- 派生求值器：`evalHeader`（@js: header → 对象，解卡点 #22）、`evalExploreUrl`（动态 exploreUrl → 数组，解卡点 #25）、`evalSearchUrl`（@js: searchUrl → URL）
+
+**集成点**（M2 在 LegadoAdapter 注入 `jsRuntime?: JSRuntime`）：
+1. `parseHeader`：header 以 `@js:` 开头 → `evalHeader(jsRuntime, header)` 求值后注入 request.headers
+2. `parseExploreUrl`：exploreUrl 以 `@js:`/`<js>` 开头 → `evalExploreUrl(...)` 求值返回发现条目数组
+3. `parseSearchUrl`：`@js:` 后缀 → `evalSearchUrl(...)` 求值生成 URL
+4. 规则执行：RuleSegment 含 `jsEval` action 的步骤（init/preUpdateJs/formatJs/webJs/imageDecode/payAction/callBackJs）→ `jsRuntime.evalSync`
+
+**安全保障**（开发规划 §9.1）：单源独立 QuickJS 实例；5s CPU 限时；64MB 内存上限；无 DOM/BOM；禁 `process/window/document`；网络统一走宿主 Fetcher。
 
 ---
 
@@ -229,8 +258,8 @@ M6 规则工坊+发布                                                          
 | 里程碑 | 周期 | 验收演示（规划） | 当前进度 | 缺口摘要 |
 |---|---|---|---|---|
 | **M0 基建** | 2w | `pnpm dev` 起 web，`pnpm tauri dev` 起桌面，CI 绿 | ~30% (Git+文档+原型) | Monorepo 骨架、pnpm workspace、TS/Vite/Vue 工程化、ESLint/Prettier、CI Workflow、原型迁移到 Vue SFC |
-| **M1 引擎内核 ★** | 4w | Node CLI：吃 legado 书源 → 搜书 → 取目录 → 读正文 | 70% | ✅ 5 选择器 + rule-router + pipeline + repo + legado 适配器 + 31 单测；缺口：500 条回归测试 + CLI 演示 |
-| **M2 JS 沙箱** | 3w | 同 CLI 跑通 1 个 eso 源 + 1 个 drpy 源 | 0% | quickjs-wasm 宿主、PDFA/PDFH 垫片、同步阻塞桥、java.* 兼容层、超时熔断 |
+| **M1 引擎内核 ★** | 4w | Node CLI：吃 legado 书源 → 搜书 → 取目录 → 读正文 | 90% | ✅ 5 选择器 + rule-router + pipeline + repo + legado 适配器（与官方 BookSource.kt 字段对齐）+ 73 单测（含 29 真实书源 + 15 订阅源 fixtures）；缺口：500 条回归测试 + CLI 演示 |
+| **M2 JS 沙箱** | 3w | 同 CLI 跑通 1 个 eso 源 + 1 个 drpy 源 | 10% | ✅ jsruntime 接口契约 + 求值器（evalHeader/evalExploreUrl/evalSearchUrl）已定义（解卡点 #22/#25）；缺口：quickjs-wasm 宿主、PDFA/PDFH 垫片、同步阻塞桥、java.* 兼容层、超时熔断 |
 | **M3 书源消费端** | 3w | 导入书源订阅 → 书院发现 → 书架分组 → 阅读（翻页/换源）| 0% | 导入向导、Dexie/SQLite 双 repo、阅读器排版引擎、RSS 发现 |
 | **M4 影视消费端** | 3w | 导入 TVBox 配置 → 影院发现 → 详情 → 播放 → 收藏入库 | 0% | CMS 协议客户端、ArtPlayer 集成(hls/dash)、聚合搜索+换源、解析接口池 + web 嗅探 |
 | **M5 直播+IPTV** | 2w | m3u 导入 → 频道表 → 播放 → EPG 时间轴 | 0% | m3u/txt 解析、EPG(xmltv) 关联渲染、genre 电台 |

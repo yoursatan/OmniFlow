@@ -3,18 +3,20 @@
  * 将 Legado BookSource JSON 转换为 UnifiedSource IR
  *
  * 参考来源：
- *   - gedoor/legado BookSource.kt（30 字段实体定义）
- *   - 真实书源 JSON：wenku8 / masiro / rezero（jiwangyihao/source-j-legado）
+ *   - LegadoTeam/legado app/src/main/java/io/legado/app/data/entities/BookSource.kt
+ *   - LegadoTeam/legado .../entities/rule/{Search,BookInfo,Toc,Content,Explore,Review}Rule.kt
+ *   - 真实书源 JSON：测试书源.json（29 个真实书源，含微博/废文网/书荒网等）
  *   - any-reader packages/legado（TypeScript 解析参考）
  *
- * Legado 书源 JSON 结构（30 字段）:
- *   基础: bookSourceUrl(PK), bookSourceName, bookSourceGroup, bookSourceType,
+ * Legado 书源 JSON 结构（与 BookSource.kt 实体对齐）:
+ *   基础: bookSourceUrl(PK), bookSourceName, bookSourceGroup, bookSourceType(0-4),
  *         bookUrlPattern, customOrder, enabled, enabledExplore, enabledCookieJar,
- *         concurrentRate, header, loginUrl, loginUi, loginCheckJs, coverDecodeJs,
- *         bookSourceComment, variableComment, lastUpdateTime, respondTime, weight,
- *         jsLib
- *   URL:  searchUrl, exploreUrl, loginUrl
- *   规则: ruleSearch, ruleBookInfo, ruleToc, ruleContent, ruleExplore, ruleReview
+ *         jsLib, concurrentRate, header, loginUrl, loginUi, loginCheckJs,
+ *         coverDecodeJs, bookSourceComment, variableComment, lastUpdateTime,
+ *         respondTime, weight
+ *   URL:  exploreUrl, exploreScreen, searchUrl
+ *   规则: ruleExplore, ruleSearch, ruleBookInfo, ruleToc, ruleContent, ruleReview
+ *   脚本: mainJs, eventListener, customButton, (扩展) homepageModules
  * ========================================================== */
 
 import type {
@@ -26,104 +28,203 @@ import type {
   OmniRequest,
 } from '@omniflow/shared'
 
-/* ---------- Legado 原始 JSON 类型定义 ---------- */
+/* ---------- Legado 原始 JSON 类型定义 ----------
+ * 字段来源：LegadoTeam/legado
+ *   - app/src/main/java/io/legado/app/data/entities/BookSource.kt
+ *   - app/src/main/java/io/legado/app/data/entities/rule/{Search,BookInfo,Toc,Content,Explore,Review}Rule.kt
+ * 字段命名与 Kotlin data class 完全一致（驼峰），便于 JSON 直解。
+ * ----------------------------------------- */
 
-/** Legado 搜索规则 */
+/** Legado 搜索规则（对应 SearchRule.kt，实现 BookListRule 接口） */
 export interface LegadoSearchRule {
+  /** 校验关键字 */
+  checkKeyWord?: string
   bookList?: string
   name?: string
   author?: string
   intro?: string
-  coverUrl?: string
-  bookUrl?: string
   kind?: string
   lastChapter?: string
+  updateTime?: string
+  bookUrl?: string
+  coverUrl?: string
   wordCount?: string
-  checkKeyWord?: string
 }
 
-/** Legado 详情页规则 */
+/** Legado 详情页规则（对应 BookInfoRule.kt） */
 export interface LegadoBookInfoRule {
+  /** 进入详情页后执行的初始化 JS */
   init?: string
   name?: string
   author?: string
   intro?: string
-  coverUrl?: string
-  tocUrl?: string
   kind?: string
   lastChapter?: string
+  updateTime?: string
+  coverUrl?: string
+  /** 目录页 URL（可与详情页不同） */
+  tocUrl?: string
   wordCount?: string
+  /** 是否允许重命名 */
   canReName?: string
+  /** 下载地址（文件型书源） */
+  downloadUrls?: string
 }
 
-/** Legado 目录规则 */
+/** Legado 目录规则（对应 TocRule.kt） */
 export interface LegadoTocRule {
+  /** 更新前执行的 JS */
+  preUpdateJs?: string
   chapterList?: string
   chapterName?: string
   chapterUrl?: string
+  /** 格式化 JS */
+  formatJs?: string
+  /** 是否分卷 */
   isVolume?: string
+  /** 是否 VIP */
   isVip?: string
+  /** 是否付费 */
+  isPay?: string
   updateTime?: string
+  /** 下一页目录 URL（分页目录） */
+  nextTocUrl?: string
 }
 
-/** Legado 正文规则 */
+/** Legado 正文规则（对应 ContentRule.kt） */
 export interface LegadoContentRule {
   content?: string
-  replaceRegex?: string
+  /** 副文规则，拼接在正文后面或获取歌词等 */
+  subContent?: string
+  /** 有些网站只能在正文中获取标题 */
+  title?: string
   nextContentUrl?: string
+  /** 正文页注入执行的 JS */
+  webJs?: string
+  /** 源文本正则（用于网页正文定位） */
+  sourceRegex?: string
+  /** 替换规则 */
+  replaceRegex?: string
+  /** 图片样式：默认大小居中，FULL 最大宽度 */
   imageStyle?: string
+  /** 图片 bytes 二次解密 js，返回解密后的 bytes */
+  imageDecode?: string
+  /** 购买操作：js 或包含 {{js}} 的 url */
   payAction?: string
+  /** 监听到事件后执行的回调 js 代码 */
+  callBackJs?: string
 }
 
-/** Legado 发现规则 */
+/** Legado 发现规则（对应 ExploreRule.kt，实现 BookListRule 接口） */
 export interface LegadoExploreRule {
   bookList?: string
   name?: string
   author?: string
   intro?: string
-  coverUrl?: string
-  bookUrl?: string
   kind?: string
   lastChapter?: string
+  updateTime?: string
+  bookUrl?: string
+  coverUrl?: string
+  wordCount?: string
 }
 
-/** Legado 书源 JSON 原始结构（对应 BookSource.kt 30 字段） */
+/** Legado 段评规则（对应 ReviewRule.kt，M1 不深度使用，仅保留字段） */
+export interface LegadoReviewRule {
+  reviewUrl?: string
+  avatar?: string
+  content?: string
+  updateTime?: string
+  author?: string
+  postUrl?: string
+  nextUrl?: string
+  star?: string
+  /** 点赞数规则 */
+  upvote?: string
+  /** 点踩数规则 */
+  downvote?: string
+}
+
+/**
+ * Legado 书源 JSON 原始结构（对应 BookSource.kt 实体定义）
+ * 注：真实导出的书源 JSON 可能携带官方实体未声明的扩展字段
+ *     （如 homepageModules），此类字段以可选形式保留以避免解析失败。
+ */
 export interface LegadoBookSource {
   // ---- 基础信息 ----
+  /** 地址（主键），包括 http/https */
   bookSourceUrl: string
+  /** 名称 */
   bookSourceName: string
+  /** 分组 */
   bookSourceGroup?: string
-  /** 0=文本 1=音频 2=图片 3=文件 */
+  /** 0=文本 1=音频 2=图片 3=文件 4=视频 */
   bookSourceType?: number
+  /** 详情页 url 正则 */
   bookUrlPattern?: string
+  /** 手动排序编号 */
   customOrder?: number
+  /** 是否启用 */
   enabled?: boolean
+  /** 启用发现 */
   enabledExplore?: boolean
+  /** js 库 */
+  jsLib?: string
+  /** 启用 okhttp CookieJar 自动保存每次请求的 cookie */
   enabledCookieJar?: boolean
   // ---- 请求配置 ----
+  /** 并发率 */
   concurrentRate?: string
-  /** JSON 字符串，如 {"Referer":"https://...","User-Agent":"..."} */
+  /** 请求头 JSON 字符串，如 {"Referer":"https://...","User-Agent":"..."} */
   header?: string
+  /** 登录地址 */
   loginUrl?: string
+  /** 登录 UI */
   loginUi?: string
+  /** 登录检测 js */
   loginCheckJs?: string
+  /** 封面解密 js */
   coverDecodeJs?: string
   // ---- 元信息 ----
+  /** 注释 */
   bookSourceComment?: string
+  /** 自定义变量说明 */
   variableComment?: string
+  /** 最后更新时间，用于排序（毫秒） */
   lastUpdateTime?: number
+  /** 响应时间，用于排序（毫秒） */
   respondTime?: number
+  /** 智能排序的权重 */
   weight?: number
-  jsLib?: string
   // ---- URL ----
-  searchUrl?: string
+  /** 发现 url */
   exploreUrl?: string
+  /** 发现筛选规则（部分版本） */
+  exploreScreen?: string
+  /** 搜索 url */
+  searchUrl?: string
   // ---- 规则 ----
-  ruleSearch?: LegadoSearchRule
-  ruleBookInfo?: LegadoBookInfoRule
-  ruleToc?: LegadoTocRule
-  ruleContent?: LegadoContentRule
+  /** 发现规则 */
   ruleExplore?: LegadoExploreRule
+  /** 搜索规则 */
+  ruleSearch?: LegadoSearchRule
+  /** 书籍信息页规则 */
+  ruleBookInfo?: LegadoBookInfoRule
+  /** 目录页规则 */
+  ruleToc?: LegadoTocRule
+  /** 正文页规则 */
+  ruleContent?: LegadoContentRule
+  /** 段评规则 */
+  ruleReview?: LegadoReviewRule
+  /** 纯 JavaScript 单文件书源主脚本；非空时优先使用脚本抓取流程 */
+  mainJs?: string
+  /** 是否监听事件来执行回调规则 */
+  eventListener?: boolean
+  /** 由书源控制的自定义按钮 */
+  customButton?: boolean
+  /** 扩展字段（非官方实体，真实书源 JSON 可能携带） */
+  homepageModules?: unknown
+  [key: string]: unknown
 }
 
 /** searchUrl 解析结果 */
@@ -179,13 +280,14 @@ export class LegadoAdapter {
     }
   }
 
-  /** bookSourceType → SourceKind */
+  /** bookSourceType → SourceKind（0=文本 1=音频 2=图片 3=文件 4=视频） */
   private mapBookType(type: number): SourceKind {
     switch (type) {
       case 1: return 'music'    // 音频
       case 2: return 'comic'    // 图片/漫画
       case 3: return 'custom'    // 文件
-      default: return 'book'     // 0 = 文本
+      case 4: return 'video'    // 视频
+      default: return 'book'    // 0 = 文本
     }
   }
 
@@ -333,6 +435,7 @@ export class LegadoAdapter {
     if (rules.kind) fields['kind'] = rules.kind
     if (rules.lastChapter) fields['lastChapter'] = rules.lastChapter
     if (rules.wordCount) fields['wordCount'] = rules.wordCount
+    if (rules.updateTime) fields['updateTime'] = rules.updateTime
 
     const segment: RuleSegment = {
       id: 'search-main',
@@ -369,12 +472,21 @@ export class LegadoAdapter {
     if (rules.kind) fields['kind'] = rules.kind
     if (rules.lastChapter) fields['lastChapter'] = rules.lastChapter
     if (rules.wordCount) fields['wordCount'] = rules.wordCount
+    if (rules.updateTime) fields['updateTime'] = rules.updateTime
+    if (rules.canReName) fields['canReName'] = rules.canReName
+    if (rules.downloadUrls) fields['downloadUrls'] = rules.downloadUrls
+
+    // init: 详情页加载后执行的初始化 JS（M1 占位，M2 沙箱求值）
+    const steps: RuleSegment['steps'] = []
+    if (rules.init) {
+      steps.push({ action: 'jsEval', expr: rules.init, name: 'init' })
+    }
 
     const segment: RuleSegment = {
       id: 'detail-main',
       label: '详情',
       request: { url: detailUrl, method: 'GET', ...(header ? { headers: header } : {}) },
-      steps: [],
+      steps,
     }
     if (Object.keys(fields).length > 0) segment.fields = fields
 
@@ -399,13 +511,24 @@ export class LegadoAdapter {
     if (rules.chapterUrl) fields['chapterUrl'] = rules.chapterUrl
     if (rules.isVolume) fields['isVolume'] = rules.isVolume
     if (rules.isVip) fields['isVip'] = rules.isVip
+    if (rules.isPay) fields['isPay'] = rules.isPay
     if (rules.updateTime) fields['updateTime'] = rules.updateTime
+    if (rules.nextTocUrl) fields['nextTocUrl'] = rules.nextTocUrl
+
+    // preUpdateJs: 更新目录前执行的 JS；formatJs: 章节格式化 JS（M1 占位，M2 沙箱求值）
+    const steps: RuleSegment['steps'] = []
+    if (rules.preUpdateJs) {
+      steps.push({ action: 'jsEval', expr: rules.preUpdateJs, name: 'preUpdate' })
+    }
+    if (rules.formatJs) {
+      steps.push({ action: 'jsEval', expr: rules.formatJs, name: 'format' })
+    }
 
     const segment: RuleSegment = {
       id: 'toc-main',
       label: '目录',
       request: { url: tocUrl, method: 'GET', ...(header ? { headers: header } : {}) },
-      steps: [],
+      steps,
     }
     if (rules.chapterList) segment.listRule = rules.chapterList
     if (Object.keys(fields).length > 0) segment.fields = fields
@@ -426,13 +549,40 @@ export class LegadoAdapter {
     const rules = src.ruleContent ?? {}
     const contentUrl = `${baseUrl}/content/{{chapterId}}`
 
-    // 正文是串行步骤：先提取 content，再执行 replaceRegex
+    // 正文是串行步骤：webJs 注入 → content 提取 → subContent 副文 → title 标题
+    //   → sourceRegex 定位 → replaceRegex 替换 → imageDecode 解密 → payAction 购买
+    //   → nextContentUrl 下一页 → callBackJs 回调
+    // 注：webJs/imageDecode/payAction/callBackJs 依赖 M2 JS 沙箱，M1 仅占位
     const steps: RuleSegment['steps'] = []
+    if (rules.webJs) {
+      steps.push({ action: 'jsEval', expr: rules.webJs, name: 'webJs' })
+    }
     if (rules.content) {
       steps.push({ action: 'jsoup', expr: rules.content, name: 'content' })
     }
+    if (rules.subContent) {
+      steps.push({ action: 'jsoup', expr: rules.subContent, name: 'subContent' })
+    }
+    if (rules.title) {
+      steps.push({ action: 'jsoup', expr: rules.title, name: 'title' })
+    }
+    if (rules.sourceRegex) {
+      steps.push({ action: 'regex', expr: rules.sourceRegex, name: 'source' })
+    }
     if (rules.replaceRegex) {
       steps.push({ action: 'replace', expr: rules.replaceRegex, name: 'replace' })
+    }
+    if (rules.imageDecode) {
+      steps.push({ action: 'jsEval', expr: rules.imageDecode, name: 'imageDecode' })
+    }
+    if (rules.payAction) {
+      steps.push({ action: 'jsEval', expr: rules.payAction, name: 'payAction' })
+    }
+    if (rules.nextContentUrl) {
+      steps.push({ action: 'jsoup', expr: rules.nextContentUrl, name: 'nextContentUrl' })
+    }
+    if (rules.callBackJs) {
+      steps.push({ action: 'jsEval', expr: rules.callBackJs, name: 'callBack' })
     }
 
     return {
@@ -480,6 +630,8 @@ export class LegadoAdapter {
     if (rules.bookUrl) fields['bookUrl'] = rules.bookUrl
     if (rules.kind) fields['kind'] = rules.kind
     if (rules.lastChapter) fields['lastChapter'] = rules.lastChapter
+    if (rules.wordCount) fields['wordCount'] = rules.wordCount
+    if (rules.updateTime) fields['updateTime'] = rules.updateTime
 
     const segment: RuleSegment = {
       id: 'explore-main',
