@@ -33,9 +33,23 @@ module.exports = {
     '*.min.js',
     'prototype',
     'coverage',
+    // 根级 eslint 无 vue-eslint-parser，.vue / .css 交给子包各自 lint（apps/web/packages/ui 有独立解析链）
+    '**/*.vue',
+    '**/*.css',
+    'packages/ui/**',
   ],
   rules: {
-    // —— TypeScript 专用：收紧推荐配置中的宽松项 ——
+    // —— TypeScript 专用：放宽/收紧推荐配置 ——
+    '@typescript-eslint/ban-types': [
+      'warn',
+      {
+        extendDefaults: true,
+        types: {
+          // {} 在 IR 中用作"无额外字段的空对象约束"（与 object / unknown 语义不同），保留为 warn 而非 error
+          '{}': false,
+        },
+      },
+    ],
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {
@@ -49,7 +63,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'warn',
     '@typescript-eslint/no-var-requires': 'error',
-    '@typescript-eslint/prefer-const': 'warn',
+    // '@typescript-eslint/prefer-const' 依赖 TS 插件完全加载，pnpm hoist 下偶发 rule-not-found；
+    // 核心 eslint 'prefer-const' 规则已覆盖同等语义，故此处不再重复配置。
     '@typescript-eslint/consistent-type-imports': [
       'warn',
       { prefer: 'type-imports', disallowTypeAnnotations: false },

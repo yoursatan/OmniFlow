@@ -161,7 +161,7 @@ const wenku8Source: LegadoBookSource = {
     intro: '//p[4]##.+简介:',
     name: '//div[2]/b/a/@title',
   },
-  exploreUrl: '@js:\nres=[]\ncontent=java.ajax(source.bookSourceUrl+\"/modules/article/articlelist.php?class=\")\nJSON.stringify(res)',
+  exploreUrl: '@js:\nres=[]\ncontent=java.ajax(source.bookSourceUrl+"/modules/article/articlelist.php?class=")\nJSON.stringify(res)',
 }
 
 /* ---------- 测试 ---------- */
