@@ -4,7 +4,7 @@
 > **创建日期**：2026-08-29
 > **最后更新**：2026-08-29
 > **当前阶段**：M0 100% ✅ + M1 100% ✅ + M2 JS 沙箱 100% ✅（30 tests, 612 total），下一步 M3 书源消费（接入 jsRuntime → LegadoAdapter）
-> **Git Commit**：见当前 `git log --oneline -1`（本次 feat(M2): QuickJS WASM 沙箱 + Legado 兼容层 + 30 tests）
+> **Git Commit**：**f362c91** feat(M2): QuickJS WASM 沙箱 + Legado 兼容层 + 30 tests（docs+chore 文档同步见下一 commit，均可通过 `git log --oneline -3` 查）
 > **工作分支**：`init-project-plan-R7Bn1J`（origin/init-project-plan-R7Bn1J 已跟踪）
 > **GitHub 仓库**：<https://github.com/yoursatan/OmniFlow>
 
